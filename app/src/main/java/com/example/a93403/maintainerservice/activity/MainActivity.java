@@ -1,10 +1,13 @@
 package com.example.a93403.maintainerservice.activity;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -23,8 +26,17 @@ import com.bumptech.glide.Glide;
 import com.example.a93403.maintainerservice.R;
 import com.example.a93403.maintainerservice.annotation.InjectView;
 import com.example.a93403.maintainerservice.bean.User;
+import com.example.a93403.maintainerservice.bean.json.OrderJson;
+import com.example.a93403.maintainerservice.util.FormatCheckUtil;
 import com.example.a93403.maintainerservice.util.InjectUtil;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.shinelw.library.ColorArcProgressBar;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -52,13 +64,17 @@ public class MainActivity extends AppCompatActivity {
     @InjectView(R.id.test_btn)
     private Button test_btn;
 
+    private List<OrderJson> jsonList = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         InjectUtil.InjectView(this); // 自定义控件绑定注解
-        user = (User) getIntent().getSerializableExtra(TRANSMIT_PARAM);
 
+        registerMessageReceiver();  // 注册接收推送消息的广播
+
+        user = (User) getIntent().getSerializableExtra(TRANSMIT_PARAM);
 
         test_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,7 +124,14 @@ public class MainActivity extends AppCompatActivity {
                         FeedbackActivity.launchActivity(MainActivity.this,user.getNickname());
                         break;
                     case R.id.order:
-                        Take_orderActivity.launchActivity(MainActivity.this,user);
+                        Take_orderActivity.launchActivity(MainActivity.this, jsonList);
+                        break;
+                    case R.id.current_order:
+                        Current_orderActivity.launchActivity(MainActivity.this,user);
+                        break;
+                    case R.id.order_history:
+                        Order_historyActivity.launchActivity(MainActivity.this,user);
+                        break;
                     default:break;
                 }
                 mDrawerLayout.closeDrawers();
@@ -165,5 +188,45 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    //for receive customer msg from jpush server
+    private MessageReceiver mMessageReceiver;
+    public static final String MESSAGE_RECEIVED_ACTION = "com.jpush.MESSAGE_RECEIVED_ACTION";
+    public static final String KEY_TITLE = "title";
+    public static final String KEY_MESSAGE = "message";
+    public static final String KEY_EXTRAS = "extras";
+    public void registerMessageReceiver() {
+        mMessageReceiver = new MessageReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
+        filter.addAction(MESSAGE_RECEIVED_ACTION);
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, filter);
+    }
+    public class MessageReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            try {
+                if (MESSAGE_RECEIVED_ACTION.equals(intent.getAction())) {
+                    String extras = intent.getStringExtra(KEY_EXTRAS);
+                    if (!FormatCheckUtil.isEmpty(extras)) {
+
+                        Gson gson = new GsonBuilder()
+                                .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                                .create();
+
+                        OrderJson orderJson = gson.fromJson(extras, new TypeToken<OrderJson>(){}.getType());
+                        Log.i(TAG, "onReceive: 测试时间===》" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(orderJson.getCreateTime()));
+                        jsonList.add(orderJson);
+                    }
+                }
+            } catch (Exception e){
+            }
+        }
+    }
+    @Override
+    protected void onDestroy() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+        super.onDestroy();
     }
 }

@@ -1,8 +1,8 @@
 package com.example.a93403.maintainerservice.adapter;
 
 
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,13 +10,16 @@ import android.widget.TextView;
 
 import com.example.a93403.maintainerservice.R;
 import com.example.a93403.maintainerservice.activity.OrderActivity;
-import com.example.a93403.maintainerservice.activity.Take_orderActivity;
-import com.example.a93403.maintainerservice.bean.Order;
+import com.example.a93403.maintainerservice.bean.FaultCode;
+import com.example.a93403.maintainerservice.bean.json.OrderJson;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder>{
-    private List<Order> mOrderList;
+    private List<OrderJson> mOrderList;
+    private static final String TAG = "OrderAdapter";
     static class ViewHolder extends  RecyclerView.ViewHolder{
         View orderView;
         TextView order_time;
@@ -34,7 +37,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder>{
         }
     }
 
-    public OrderAdapter(List<Order> mOrderList) {
+    public OrderAdapter(List<OrderJson> mOrderList) {
         this.mOrderList = mOrderList;
     }
 
@@ -47,7 +50,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder>{
             @Override
             public void onClick(View view) {
                 int position = holder.getAdapterPosition();
-                Order order = mOrderList.get(position);
+                OrderJson order = mOrderList.get(position);
                 OrderActivity.launchActivity(view.getContext(),order);
             }
         });
@@ -56,11 +59,21 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder>{
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Order order = mOrderList.get(position);
-        holder.order_time.setText(order.getTime().toString());
-        holder.order_type.setText(order.getCar_type());
-        holder.order_distance.setText(String.valueOf(order.getDistance()));
-        holder.order_describe.setText(order.getDescribe());
+        OrderJson order = mOrderList.get(position);
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        holder.order_time.setText(formatter.format(new Date()));
+        holder.order_type.setText(order.getCustomer().getCarBrand() + order.getCustomer().getCarId());
+        holder.order_distance.setText(String.valueOf(order.getLatitude()));
+
+
+        StringBuilder stringBuilder = new StringBuilder("");
+        for (FaultCode faultCode : order.getFaultCodeList()) {
+            stringBuilder.append(faultCode.getDescribe()).append(";  ");
+        }
+        Log.i(TAG, "onBindViewHolder: " + stringBuilder.toString());
+
+        holder.order_describe.setText(stringBuilder.toString());
 
     }
 

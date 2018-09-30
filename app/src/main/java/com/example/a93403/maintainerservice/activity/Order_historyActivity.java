@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 
 import com.example.a93403.maintainerservice.R;
@@ -18,49 +17,46 @@ import com.example.a93403.maintainerservice.bean.Order;
 import com.example.a93403.maintainerservice.bean.User;
 import com.example.a93403.maintainerservice.bean.json.OrderJson;
 import com.example.a93403.maintainerservice.util.InjectUtil;
-import com.google.gson.Gson;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class Take_orderActivity extends AppCompatActivity {
-    public static final String TRANSMIT_PARAM = "ORDER_LIST";
-    private List<OrderJson> orderList;
-    private static final String TAG = "Take_orderActivity";
+public class Order_historyActivity extends AppCompatActivity {
 
-    @InjectView(R.id.take_order_tb)
+    public static final String TRANSMIT_PARAM = "USER";
+    private List<OrderJson> orderList = new ArrayList<>();
+
+    @InjectView(R.id.history_order_tb)
     private Toolbar toolbar;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_take_order);
+        setContentView(R.layout.activity_order_history);
         InjectUtil.InjectView(this); // 自定义控件绑定注解
-
-        // 接收订单数据
-        Intent intent = getIntent();
-        orderList = (List<OrderJson>) intent.getSerializableExtra(TRANSMIT_PARAM);
-
-        if (!orderList.isEmpty()) {
-            Log.i(TAG, "进入接收订单后订单JSON数据的传输情况=======》\n" + new Gson().toJson(orderList));
-
-            RecyclerView recyclerView = findViewById(R.id.recycle_view);
-            LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-            recyclerView.setLayoutManager(layoutManager);
-            OrderAdapter adapter = new OrderAdapter(orderList);
-            recyclerView.setAdapter(adapter);
-        } else {
-            Log.i(TAG, "onCreate: 订单数据为空");
-        }
-
+//        initOrders();
         init();
+        RecyclerView recyclerView = findViewById(R.id.recycle_view);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        OrderAdapter adapter = new OrderAdapter(orderList);
+        recyclerView.setAdapter(adapter);
     }
 
-    public static void launchActivity(Context context, List<OrderJson> orderList) {
-        Intent intent = new Intent(context, Take_orderActivity.class);
-        intent.putExtra(TRANSMIT_PARAM, (Serializable)orderList);
+//    private void initOrders(){
+//
+//        for(int i=0;i<2;i++){
+//            Order order_1 = new Order(new Date(),"奥迪A8",8,"这辆车有问题！");
+//            orderList.add(order_1);
+//            Order order_2 = new Order(new Date(),"大众A3",3,"这辆车有大问题！");
+//            orderList.add(order_2);
+//        }
+//    }
+    public static void launchActivity(Context context, User user) {
+        Intent intent = new Intent(context, Order_historyActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(TRANSMIT_PARAM, user);
+        intent.putExtras(bundle);
         context.startActivity(intent);
     }
 
@@ -71,13 +67,13 @@ public class Take_orderActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeButtonEnabled(true); // 返回按钮可点击
         }
-        toolbar.setSubtitle("我要接单");
+        toolbar.setSubtitle("历史订单");
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            Take_orderActivity.this.finish();
+            Order_historyActivity.this.finish();
         }
         return super.onOptionsItemSelected(item);
     }

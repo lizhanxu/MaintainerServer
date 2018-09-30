@@ -69,9 +69,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     @InjectView(R.id.set_brand_rl)
     private RelativeLayout set_brand_rl;
 
-    @InjectView(R.id.set_brand_no_rl)
-    private RelativeLayout set_brand_no_rl;
-
     @InjectView(R.id.show_portrait_civ)
     private CircleImageView show_portrait_civ;
 
@@ -83,9 +80,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
     @InjectView(R.id.show_brand_tv)
     private TextView show_brand_tv;
-
-    @InjectView(R.id.show_brand_no_tv)
-    private TextView show_brand_no_tv;
 
     @InjectView(R.id.exit_login_btn)
     private Button exit_login_btn;
@@ -115,9 +109,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 break;
             case R.id.set_brand_rl:
                 modifyInfo(MODIFY_BRAND);
-                break;
-            case R.id.set_brand_no_rl:
-                modifyInfo(MODIFY_BRAND_NO);
                 break;
             case R.id.exit_login_btn:
                 showExitDialog();
@@ -214,9 +205,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                                         break;
                                     case MODIFY_BRAND:
                                         show_brand_tv.setText(input);
-                                        break;
-                                    case MODIFY_BRAND_NO:
-                                        show_brand_no_tv.setText(input);
                                         break;
                                 }
                             }

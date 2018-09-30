@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/take_order_tb"
+        android:id="@+id/current_order_tb"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/appThemeColor"
@@ -15,14 +15,14 @@
     <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/swipe_take_order"
-        android:layout_below="@+id/take_order_tb"
+        android:id="@+id/swipe_current_order"
+        android:layout_below="@+id/current_order_tb"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycle_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+            android:id="@+id/recycle_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
         </android.support.v7.widget.RecyclerView>
 

@@ -57,7 +57,7 @@
         <activity android:name=".activity.FeedbackActivity" />
         <activity android:name=".activity.SettingsActivity" />
         <activity android:name=".activity.Take_orderActivity" />
-        <activity android:name=".activity.OrderActivity"/>
+        <activity android:name=".activity.OrderActivity" />
 
         <!-- User defined.  For test only  用户自定义的广播接收器 -->
         <receiver
@@ -73,6 +73,10 @@
                 <category android:name="com.jundger.carservice" />
             </intent-filter>
         </receiver>
+
+        <activity android:name=".activity.Order_historyActivity" />
+        <activity android:name=".activity.Current_orderActivity" />
+        <activity android:name=".activity.InformActivity"></activity>
     </application>
 
 </manifest>

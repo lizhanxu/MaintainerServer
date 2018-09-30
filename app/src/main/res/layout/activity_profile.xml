@@ -130,40 +130,41 @@
         android:orientation="vertical"
         android:layout_margin="5dp"
         android:background="@drawable/profile_bg">
+
         <RelativeLayout
             android:id="@+id/set_brand_rl"
             android:layout_width="match_parent"
-            android:onClick="onClick"
             android:layout_height="65dp"
-            android:layout_margin="5dp">
+            android:layout_margin="5dp"
+            android:onClick="onClick">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="@string/profile_brand_str_tv"
-                android:textSize="18sp"
-                android:gravity="center_vertical"
                 android:layout_marginLeft="10dp"
-                android:layout_marginStart="10dp" />
+                android:layout_marginStart="10dp"
+                android:gravity="center_vertical"
+                android:text="所属店铺"
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/show_brand_tv"
                 android:layout_width="wrap_content"
-                android:text="@string/default_null_str"
-                android:textSize="18sp"
-                android:gravity="center_vertical"
                 android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginEnd="40dp"
                 android:layout_marginRight="40dp"
-                android:layout_marginEnd="40dp" />
+                android:gravity="center_vertical"
+                android:text="@string/default_null_str"
+                android:textSize="18sp" />
 
             <ImageView
                 android:layout_width="25dp"
                 android:layout_height="match_parent"
-                android:src="@drawable/icon_profile_arrow"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"/>
+                android:src="@drawable/icon_profile_arrow" />
         </RelativeLayout>
 
         <View
@@ -171,41 +172,6 @@
             android:layout_height="1dp"
             android:background="#ffcccccc"/>
 
-        <RelativeLayout
-            android:id="@+id/set_brand_no_rl"
-            android:layout_width="match_parent"
-            android:onClick="onClick"
-            android:layout_height="65dp"
-            android:layout_margin="5dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="@string/profile_brand_no_str_tv"
-                android:textSize="18sp"
-                android:gravity="center_vertical"
-                android:layout_marginLeft="10dp"
-                android:layout_marginStart="10dp" />
-
-            <TextView
-                android:id="@+id/show_brand_no_tv"
-                android:layout_width="wrap_content"
-                android:text="@string/default_null_str"
-                android:textSize="18sp"
-                android:gravity="center_vertical"
-                android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginRight="40dp"
-                android:layout_marginEnd="40dp" />
-
-            <ImageView
-                android:layout_width="25dp"
-                android:layout_height="match_parent"
-                android:src="@drawable/icon_profile_arrow"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"/>
-        </RelativeLayout>
     </LinearLayout>
 
     <Button

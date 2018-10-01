@@ -67,8 +67,6 @@ public class ProfileActivity extends BaseActivity implements View.OnClickListene
     @InjectView(R.id.set_email_rl)
     private RelativeLayout set_email_rl;
 
-    @InjectView(R.id.set_brand_rl)
-    private RelativeLayout set_brand_rl;
 
     @InjectView(R.id.show_portrait_civ)
     private CircleImageView show_portrait_civ;
@@ -79,8 +77,6 @@ public class ProfileActivity extends BaseActivity implements View.OnClickListene
     @InjectView(R.id.show_email_tv)
     private TextView show_email_tv;
 
-    @InjectView(R.id.show_brand_tv)
-    private TextView show_brand_tv;
 
     @InjectView(R.id.exit_login_btn)
     private Button exit_login_btn;
@@ -107,9 +103,6 @@ public class ProfileActivity extends BaseActivity implements View.OnClickListene
                 break;
             case R.id.set_email_rl:
                 modifyInfo(MODIFY_EMAIL);
-                break;
-            case R.id.set_brand_rl:
-                modifyInfo(MODIFY_BRAND);
                 break;
             case R.id.exit_login_btn:
                 showExitDialog();
@@ -203,9 +196,6 @@ public class ProfileActivity extends BaseActivity implements View.OnClickListene
                                         break;
                                     case MODIFY_EMAIL:
                                         show_email_tv.setText(input);
-                                        break;
-                                    case MODIFY_BRAND:
-                                        show_brand_tv.setText(input);
                                         break;
                                 }
                             }

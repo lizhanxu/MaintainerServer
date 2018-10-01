@@ -2,6 +2,7 @@ package com.example.a93403.maintainerservice.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -35,24 +36,9 @@ public class Current_orderActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_current_order);
         InjectUtil.InjectView(this); // 自定义控件绑定注解
-//        initOrders();
         init();
-        RecyclerView recyclerView = findViewById(R.id.recycle_view);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-        OrderAdapter adapter = new OrderAdapter(orderList);
-        recyclerView.setAdapter(adapter);
     }
 
-//    private void initOrders(){
-//
-//        for(int i=0;i<2;i++){
-//            Order order_1 = new Order(new Date(),"奥迪A8",8,"这辆车有问题！");
-//            orderList.add(order_1);
-//            Order order_2 = new Order(new Date(),"大众A3",3,"这辆车有大问题！");
-//            orderList.add(order_2);
-//        }
-//    }
     public static void launchActivity(Context context, User user) {
         Intent intent = new Intent(context, Current_orderActivity.class);
         Bundle bundle = new Bundle();

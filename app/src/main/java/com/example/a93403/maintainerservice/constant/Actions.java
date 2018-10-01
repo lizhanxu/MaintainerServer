@@ -70,4 +70,10 @@ public class Actions {
      * 忘记密码的action
      */
     public static final String ACTION_FORGET_PASSWORD = "repairman/forgetPsw.do";
+
+    /**
+     * 接受订单的action
+     */
+    public static final String ACTION_ACCEPT_ORDER = "order/accept.do";
+
 }

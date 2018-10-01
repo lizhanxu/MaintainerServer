@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.a93403.maintainerservice.R;
 import com.example.a93403.maintainerservice.annotation.InjectView;
+import com.example.a93403.maintainerservice.base.BaseActivity;
 import com.example.a93403.maintainerservice.bean.User;
 import com.example.a93403.maintainerservice.constant.APPConsts;
 import com.example.a93403.maintainerservice.constant.Actions;
@@ -42,7 +43,7 @@ import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class ProfileActivity extends AppCompatActivity implements View.OnClickListener{
+public class ProfileActivity extends BaseActivity implements View.OnClickListener{
 
     private static final String PARAM_USER = "user_info";
     private static final String TAG = "ProfileActivity";

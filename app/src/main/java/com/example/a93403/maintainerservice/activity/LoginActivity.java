@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +14,7 @@ import android.widget.Toast;
 import com.example.a93403.maintainerservice.R;
 import com.example.a93403.maintainerservice.annotation.InjectView;
 
+import com.example.a93403.maintainerservice.base.BaseActivity;
 import com.example.a93403.maintainerservice.bean.ResultObject;
 import com.example.a93403.maintainerservice.bean.User;
 import com.example.a93403.maintainerservice.constant.APPConsts;
@@ -36,7 +36,7 @@ import java.util.Set;
 
 import cn.jpush.android.api.JPushInterface;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
+public class LoginActivity extends BaseActivity implements View.OnClickListener {
 
 
     private static final String TAG = "LoginActivity";

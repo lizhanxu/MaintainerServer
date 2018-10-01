@@ -2,13 +2,10 @@ package com.example.a93403.maintainerservice.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.example.a93403.maintainerservice.R;
 import com.example.a93403.maintainerservice.base.BaseActivity;
-import com.example.a93403.maintainerservice.bean.Order;
-import com.example.a93403.maintainerservice.bean.User;
 import com.example.a93403.maintainerservice.bean.json.OrderJson;
 
 public class OrderActivity extends BaseActivity {

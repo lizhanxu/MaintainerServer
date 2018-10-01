@@ -26,7 +26,7 @@ import java.util.List;
 
 public class Current_orderActivity extends BaseActivity {
 
-    public static final String TRANSMIT_PARAM = "USER";
+    public static final String TRANSMIT_PARAM = "ORDER";
     private List<OrderJson> orderList = new ArrayList<>();
 
     @InjectView(R.id.current_order_tb)
@@ -39,10 +39,10 @@ public class Current_orderActivity extends BaseActivity {
         init();
     }
 
-    public static void launchActivity(Context context, User user) {
+    public static void launchActivity(Context context, OrderJson orderJson) {
         Intent intent = new Intent(context, Current_orderActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putSerializable(TRANSMIT_PARAM, user);
+        bundle.putSerializable(TRANSMIT_PARAM, orderJson);
         intent.putExtras(bundle);
         context.startActivity(intent);
     }

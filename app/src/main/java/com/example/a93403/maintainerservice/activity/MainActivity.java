@@ -129,7 +129,7 @@ public class MainActivity extends BaseActivity {
                         Take_orderActivity.launchActivity(MainActivity.this, jsonList);
                         break;
                     case R.id.current_order:
-                        Current_orderActivity.launchActivity(MainActivity.this,user);
+                        Current_orderActivity.launchActivity(MainActivity.this, null);
                         break;
                     case R.id.order_history:
                         Order_historyActivity.launchActivity(MainActivity.this,user);

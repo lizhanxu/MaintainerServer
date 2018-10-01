@@ -9,9 +9,15 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.a93403.maintainerservice.activity.MainActivity;
+import com.example.a93403.maintainerservice.activity.OrderActivity;
+import com.example.a93403.maintainerservice.activity.Take_orderActivity;
+import com.example.a93403.maintainerservice.bean.json.OrderJson;
 import com.example.a93403.maintainerservice.constant.APPConsts;
 import com.example.a93403.maintainerservice.util.FormatCheckUtil;
 import com.example.a93403.maintainerservice.util.SharedPreferencesUtil;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,17 +53,11 @@ public class JPushReceiver extends BroadcastReceiver {
 //                int notifactionId = bundle.getInt(JPushInterface.EXTRA_NOTIFICATION_ID);
 //                Log.d(TAG, "[MyReceiver] 接收到推送下来的通知的ID: " + notifactionId);
 
-                processCustomMessage(context, bundle);
+                processNotify(context, bundle);
 
             } else if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(intent.getAction())) {
                 Log.d(TAG, "[MyReceiver] 用户点击打开了通知");
-
-                //打开自定义的Activity
-                Intent i = new Intent(context, MainActivity.class);
-                i.putExtras(bundle);
-                //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP );
-                context.startActivity(i);
+                processCustomMessage(context, bundle);
 
             } else if (JPushInterface.ACTION_RICHPUSH_CALLBACK.equals(intent.getAction())) {
                 Log.d(TAG, "[MyReceiver] 用户收到到RICH PUSH CALLBACK: " + bundle.getString(JPushInterface.EXTRA_EXTRA));
@@ -113,6 +113,21 @@ public class JPushReceiver extends BroadcastReceiver {
 
     //send msg to NotifyActivity
     private void processCustomMessage(Context context, Bundle bundle) {
+
+        // 打开自定义的Activity
+        String extras = bundle.getString(JPushInterface.EXTRA_EXTRA);
+        if (!FormatCheckUtil.isEmpty(extras)) {
+
+            Gson gson = new GsonBuilder()
+                    .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                    .create();
+
+            OrderJson orderJson = gson.fromJson(extras, new TypeToken<OrderJson>() {}.getType());
+            OrderActivity.launchActivity(context, orderJson);
+        }
+    }
+
+    private void processNotify(Context context, Bundle bundle) {
         String message = bundle.getString(JPushInterface.EXTRA_MESSAGE);
         String extras = bundle.getString(JPushInterface.EXTRA_EXTRA);
         Intent msgIntent = new Intent(MainActivity.MESSAGE_RECEIVED_ACTION);

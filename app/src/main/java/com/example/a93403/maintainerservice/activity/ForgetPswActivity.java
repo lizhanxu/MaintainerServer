@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.example.a93403.maintainerservice.R;
 import com.example.a93403.maintainerservice.annotation.InjectView;
+import com.example.a93403.maintainerservice.base.BaseActivity;
 import com.example.a93403.maintainerservice.constant.Actions;
 import com.example.a93403.maintainerservice.constant.UrlConsts;
 import com.example.a93403.maintainerservice.util.FormatCheckUtil;
@@ -36,7 +37,7 @@ import okhttp3.FormBody;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class ForgetPswActivity extends AppCompatActivity {
+public class ForgetPswActivity extends BaseActivity {
 
     @InjectView(R.id.forget_activity_tb)
     private Toolbar toolbar;

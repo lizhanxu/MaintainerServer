@@ -3,22 +3,17 @@ package com.example.a93403.maintainerservice.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.example.a93403.maintainerservice.R;
 import com.example.a93403.maintainerservice.annotation.InjectView;
-import com.example.a93403.maintainerservice.bean.Order;
-import com.example.a93403.maintainerservice.bean.User;
+import com.example.a93403.maintainerservice.base.BaseActivity;
 import com.example.a93403.maintainerservice.bean.json.OrderJson;
 import com.example.a93403.maintainerservice.util.InjectUtil;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class OrderActivity extends AppCompatActivity {
+public class OrderActivity extends BaseActivity {
     public static final String TRANSMIT_PARAM = "ORDER";
     private OrderJson order;
     @InjectView(R.id.order_tb)

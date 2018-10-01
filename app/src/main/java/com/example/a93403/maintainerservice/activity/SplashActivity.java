@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.example.a93403.maintainerservice.R;
+import com.example.a93403.maintainerservice.base.BaseActivity;
 import com.example.a93403.maintainerservice.constant.APPConsts;
 import com.example.a93403.maintainerservice.bean.User;
 import com.example.a93403.maintainerservice.util.SharedPreferencesUtil;
@@ -13,7 +14,7 @@ import org.litepal.crud.DataSupport;
 
 import java.util.List;
 
-public class SplashActivity extends AppCompatActivity {
+public class SplashActivity extends BaseActivity {
     private static final String TAG = "SplashActivity";
 
     @Override

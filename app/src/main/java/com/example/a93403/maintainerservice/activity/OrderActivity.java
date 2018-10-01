@@ -1,5 +1,6 @@
 package com.example.a93403.maintainerservice.activity;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.a93403.maintainerservice.R;
 import com.example.a93403.maintainerservice.annotation.InjectView;
@@ -25,12 +27,14 @@ import com.example.a93403.maintainerservice.util.HttpUtil;
 import com.example.a93403.maintainerservice.util.InjectUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import org.litepal.crud.DataSupport;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -43,6 +47,7 @@ public class OrderActivity extends BaseActivity {
     private static final String TAG = "OrderActivity";
     private OrderJson order;
     private String json;
+    private Dialog dialog = null;
     @InjectView(R.id.order_tb)
     private Toolbar toolbar;
     @InjectView(R.id.order_id)
@@ -79,20 +84,51 @@ public class OrderActivity extends BaseActivity {
         ack_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                startDialog("请稍等...");
+                final long startTime = System.currentTimeMillis();
                 RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
                 HttpUtil.okHttpPost(UrlConsts.getRequestURL(Actions.ACTION_ACCEPT_ORDER), requestBody, new Callback() {
                     @Override
                     public void onFailure(@NonNull Call call, @NonNull IOException e) {
                         Log.i(TAG, "请求失败");
+                        endDialog();
                     }
 
                     @Override
                     public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                        String prompt;
                         if (response.code() == 200) {
-                            String res = response.body().toString();
-
+                            String res = response.body().string();
                             Log.i(TAG, "onResponse: 得到服务器返回数据===>" + res);
+
+                            Map<String, String> result = new Gson().fromJson(res, new TypeToken<Map<String, String>>() {}.getType());
+                            if (UrlConsts.CODE_SUCCESS.equals(result.get(UrlConsts.KEY_RETURN_CODE))) {
+                                prompt = "接单成功";
+                                Current_orderActivity.launchActivity(OrderActivity.this, order);
+                            } else {
+                                prompt = "接单失败";
+                            }
+                        } else {
+                            prompt = "未知错误";
                         }
+                        long endTime = System.currentTimeMillis();
+                        if (endTime - startTime < 1000) {
+                            try {
+                                Thread.sleep(1000 - (endTime - startTime));
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            endDialog();
+                        }
+
+                        final String finalPrompt = prompt;
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(OrderActivity.this, finalPrompt, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        endDialog();
                     }
                 });
             }
@@ -101,6 +137,7 @@ public class OrderActivity extends BaseActivity {
     }
     public static void launchActivity(Context context, OrderJson order) {
         Intent intent = new Intent(context, OrderActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP );
         Bundle bundle = new Bundle();
         bundle.putSerializable(TRANSMIT_PARAM, order);
         intent.putExtras(bundle);
@@ -137,12 +174,31 @@ public class OrderActivity extends BaseActivity {
         List<User> user = DataSupport.findAll(User.class);
         Repairman repairman = new Repairman(user.get(0));
         order.setRepairman(repairman);
+//        order.setCreateTime(null);
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             OrderActivity.this.finish();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void startDialog(String msg) {
+        dialog = new Dialog(OrderActivity.this, R.style.MyDialogStyle);
+        dialog.setContentView(R.layout.loading);
+        dialog.setCanceledOnTouchOutside(false);
+        TextView message = (TextView) dialog.getWindow().findViewById(R.id.load_msg);
+        if (dialog != null && !dialog.isShowing()) {
+            message.setText(msg);
+            dialog.show();
+        }
+    }
+
+    private void endDialog() {
+        if (dialog != null && dialog.isShowing()) {
+            dialog.dismiss();
+        }
     }
 }

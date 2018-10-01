@@ -1,7 +1,13 @@
 package com.example.a93403.maintainerservice.activity;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +17,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.example.a93403.maintainerservice.R;
 import com.example.a93403.maintainerservice.adapter.OrderAdapter;
@@ -20,6 +27,7 @@ import com.example.a93403.maintainerservice.bean.Order;
 import com.example.a93403.maintainerservice.bean.User;
 import com.example.a93403.maintainerservice.bean.json.OrderJson;
 import com.example.a93403.maintainerservice.util.InjectUtil;
+import com.example.a93403.maintainerservice.util.LocationUtil;
 import com.google.gson.Gson;
 
 import java.io.Serializable;
@@ -33,8 +41,15 @@ public class Take_orderActivity extends BaseActivity {
 
     public static final String TRANSMIT_PARAM = "ORDER_LIST";
 
+    private static String[] permissions = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
+    private static final int LOCATION_CODE = 1;
+
+    public static Double longitude = 106.528041;
+    public static Double latitude = 29.455653;
+
     public List<OrderJson> orderList = null;
     private OrderAdapter adapter;
+    Location location = null;
 
     @InjectView(R.id.take_order_tb)
     private Toolbar toolbar;
@@ -60,23 +75,29 @@ public class Take_orderActivity extends BaseActivity {
         } else {
             Log.i(TAG, "onCreate: 订单数据为空");
         }
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        recycle_view.setLayoutManager(layoutManager);
-        initRecycleView();
-
         init();
+
+        int i = ContextCompat.checkSelfPermission(Take_orderActivity.this, permissions[0]);
+        if (i != PackageManager.PERMISSION_GRANTED)
+        {
+            ActivityCompat.requestPermissions(Take_orderActivity.this, permissions, LOCATION_CODE);
+        }
+
     }
 
-    public void initRecycleView() {
-        adapter = new OrderAdapter(orderList);
-        recycle_view.setAdapter(adapter);
-    }
-
-    public static void launchActivity(Context context, List<OrderJson> orderList) {
-        Intent intent = new Intent(context, Take_orderActivity.class);
-        intent.putExtra(TRANSMIT_PARAM, (Serializable)orderList);
-        context.startActivity(intent);
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case LOCATION_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // 权限被用户同意
+                } else {
+                    // 权限被用户拒绝
+                    Toast.makeText(Take_orderActivity.this, "请开启定位权限", Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
     }
 
     private void init() {
@@ -95,6 +116,30 @@ public class Take_orderActivity extends BaseActivity {
                 refreshOrders();
             }
         });
+
+        location = LocationUtil.requestLocation(Take_orderActivity.this);
+        if (null != location) {
+            Log.i(TAG, "不为空: " + longitude + " : " + latitude);
+            longitude = location.getLongitude();
+            latitude = location.getLatitude();
+        } else {
+            Log.i(TAG, "为空");
+        }
+
+        initRecycleView();
+    }
+
+    public void initRecycleView() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recycle_view.setLayoutManager(layoutManager);
+        adapter = new OrderAdapter(orderList);
+        recycle_view.setAdapter(adapter);
+    }
+
+    public static void launchActivity(Context context, List<OrderJson> orderList) {
+        Intent intent = new Intent(context, Take_orderActivity.class);
+        intent.putExtra(TRANSMIT_PARAM, (Serializable)orderList);
+        context.startActivity(intent);
     }
 
     public void refreshOrders() {

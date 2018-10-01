@@ -25,6 +25,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.a93403.maintainerservice.R;
 import com.example.a93403.maintainerservice.annotation.InjectView;
+import com.example.a93403.maintainerservice.base.ActivityCollector;
+import com.example.a93403.maintainerservice.base.BaseActivity;
 import com.example.a93403.maintainerservice.bean.User;
 import com.example.a93403.maintainerservice.bean.json.OrderJson;
 import com.example.a93403.maintainerservice.util.FormatCheckUtil;
@@ -41,7 +43,7 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     public static final String TRANSMIT_PARAM = "USER";
     private static final String TAG = "MainActivity";
@@ -218,6 +220,17 @@ public class MainActivity extends AppCompatActivity {
                         OrderJson orderJson = gson.fromJson(extras, new TypeToken<OrderJson>(){}.getType());
                         Log.i(TAG, "onReceive: 测试时间===》" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(orderJson.getCreateTime()));
                         jsonList.add(orderJson);
+
+                        // 判断Take_orderActivity是否已经存在，如果存在则更新其显示内容
+                        Take_orderActivity take_orderActivity = ActivityCollector.getActivity(Take_orderActivity.class);
+                        if (null != take_orderActivity) {
+                            Log.i(TAG, "onReceive: 接单活动已经存在！！");
+                            take_orderActivity.orderList.add(orderJson);
+
+                            take_orderActivity.refreshOrders();
+                        } else {
+                            Log.i(TAG, "onReceive: 接单活动不存在！！");
+                        }
                     }
                 }
             } catch (Exception e){

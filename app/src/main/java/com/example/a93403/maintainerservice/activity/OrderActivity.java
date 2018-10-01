@@ -6,11 +6,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.example.a93403.maintainerservice.R;
+import com.example.a93403.maintainerservice.base.BaseActivity;
 import com.example.a93403.maintainerservice.bean.Order;
 import com.example.a93403.maintainerservice.bean.User;
 import com.example.a93403.maintainerservice.bean.json.OrderJson;
 
-public class OrderActivity extends AppCompatActivity {
+public class OrderActivity extends BaseActivity {
     public static final String TRANSMIT_PARAM = "ORDER";
     @Override
     protected void onCreate(Bundle savedInstanceState) {

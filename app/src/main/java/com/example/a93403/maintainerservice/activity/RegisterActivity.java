@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.example.a93403.maintainerservice.R;
 import com.example.a93403.maintainerservice.annotation.InjectView;
+import com.example.a93403.maintainerservice.base.BaseActivity;
 import com.example.a93403.maintainerservice.constant.Actions;
 import com.example.a93403.maintainerservice.constant.UrlConsts;
 import com.example.a93403.maintainerservice.util.FormatCheckUtil;
@@ -37,7 +38,7 @@ import okhttp3.FormBody;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends BaseActivity {
     private static final String TAG = "RegisterActivity";
 
     @InjectView(R.id.register_activity_tb)

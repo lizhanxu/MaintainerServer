@@ -132,7 +132,7 @@ public class MainActivity extends BaseActivity {
                         break;
                     case R.id.current_order:
                         List<CurrentOrder> currentOrders = DataSupport.findAll(CurrentOrder.class);
-                        if(currentOrders.get(0).getOrder_id() == null)
+                        if(currentOrders == null)
                         {
                             Intent intent = new Intent(MainActivity.this, EmptyActivity.class);
                             startActivity(intent);

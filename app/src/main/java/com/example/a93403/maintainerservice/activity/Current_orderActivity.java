@@ -4,14 +4,10 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
@@ -21,14 +17,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.a93403.maintainerservice.R;
-import com.example.a93403.maintainerservice.adapter.OrderAdapter;
 import com.example.a93403.maintainerservice.annotation.InjectView;
-import com.example.a93403.maintainerservice.base.ActivityCollector;
 import com.example.a93403.maintainerservice.base.BaseActivity;
 import com.example.a93403.maintainerservice.bean.CurrentOrder;
 import com.example.a93403.maintainerservice.bean.FaultCode;
-import com.example.a93403.maintainerservice.bean.Order;
-import com.example.a93403.maintainerservice.bean.User;
 import com.example.a93403.maintainerservice.bean.json.OrderJson;
 import com.example.a93403.maintainerservice.constant.Actions;
 import com.example.a93403.maintainerservice.constant.UrlConsts;
@@ -44,15 +36,12 @@ import org.litepal.crud.DataSupport;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
@@ -60,7 +49,6 @@ public class Current_orderActivity extends BaseActivity {
 
     public static final String TRANSMIT_PARAM = "ORDER";
     private static final String TAG = "Current_orderActivity";
-    private List<OrderJson> orderlist = new ArrayList<>();
     private OrderJson order;
     private Dialog dialog = null;
 
@@ -207,6 +195,9 @@ public class Current_orderActivity extends BaseActivity {
         }
         toolbar.setSubtitle("当前订单");
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        List<CurrentOrder> currentOrders = DataSupport.findAll(CurrentOrder.class);
+
+        Log.i(TAG, "init: 输出来数据库数据===>" + new Gson().toJson(currentOrders));
         if(order != null){
             order_id.setText(order.getOrderNo());
             order_date.setText(formatter.format(order.getCreateTime()));
@@ -225,11 +216,9 @@ public class Current_orderActivity extends BaseActivity {
             }
             fault_describe.setText(stringBuilder_describe.toString());
             //读取数据库，取出接单时间
-            List<CurrentOrder> currentOrders = DataSupport.findAll(CurrentOrder.class);
             Log.i(TAG, "init: " + new Gson().toJson(currentOrders));
             order_date_take.setText(formatter.format(currentOrders.get(0).getAck_time()));
-        }else{
-            List<CurrentOrder> currentOrders = DataSupport.findAll(CurrentOrder.class);
+        } else if (null != currentOrders && !currentOrders.isEmpty()) {
             order_date_take.setText(formatter.format(currentOrders.get(0).getAck_time()));
             order_id.setText(currentOrders.get(0).getOrder_id());
             order_date.setText(formatter.format(currentOrders.get(0).getPublish_time()));

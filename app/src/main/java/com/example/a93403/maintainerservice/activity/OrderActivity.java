@@ -42,6 +42,7 @@ import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import okhttp3.Response;
@@ -49,8 +50,9 @@ import okhttp3.Response;
 public class OrderActivity extends BaseActivity {
     public static final String TRANSMIT_PARAM = "ORDER";
     private static final String TAG = "OrderActivity";
-    private OrderJson order = null;
+    private CurrentOrder order = null;
     private String json;
+    private User user;
     private Dialog dialog = null;
     @InjectView(R.id.order_tb)
     private Toolbar toolbar;
@@ -78,7 +80,7 @@ public class OrderActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order);
 
-        order = (OrderJson) getIntent().getSerializableExtra(TRANSMIT_PARAM);
+        order = (CurrentOrder) getIntent().getSerializableExtra(TRANSMIT_PARAM);
         InjectUtil.InjectView(this); // 自定义控件绑定注解
         init();
 
@@ -90,7 +92,13 @@ public class OrderActivity extends BaseActivity {
             public void onClick(View view) {
                 startDialog("请稍等...");
                 final long startTime = System.currentTimeMillis();
-                RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+
+                RequestBody requestBody = new FormBody.Builder()
+                        .add("orderNo", order.getOrder_id()) // order.getCustomer().getCustPhone()  //13900000000
+                        .add("customerPhone", order.getPhone())
+                        .add("repairmanId", String.valueOf(user.getId()))
+                        .build();
+
                 HttpUtil.okHttpPost(UrlConsts.getRequestURL(Actions.ACTION_ACCEPT_ORDER), requestBody, new Callback() {
                     @Override
                     public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -117,32 +125,28 @@ public class OrderActivity extends BaseActivity {
                                 DataSupport.deleteAll(CurrentOrder.class);
 
                                 // 将订单数据存入数据库
-                                currentOrder.setOrder_id(order.getOrderNo());
-                                currentOrder.setPublish_time(order.getCreateTime());
+                                currentOrder.setOrder_id(order.getOrder_id());
+                                currentOrder.setPublish_time(order.getPublish_time());
                                 currentOrder.setAck_time(take_order_time);
-                                currentOrder.setNickname(order.getCustomer().getCustName());
-                                currentOrder.setPhone(order.getCustomer().getCustPhone());
-                                currentOrder.setCar_brand(order.getCustomer().getCarBrand());
-                                currentOrder.setCar_type(order.getCustomer().getCarId());
-
-                                StringBuilder stringBuilder_code = new StringBuilder("");
-                                for(FaultCode faultCode : order.getFaultCodeList()) {
-                                    stringBuilder_code.append(faultCode.getCode()).append(";  ");
-                                }
-
-                                currentOrder.setFault_code(stringBuilder_code.toString());
-
-                                StringBuilder stringBuilder_describe = new StringBuilder("");
-                                for (FaultCode faultCode : order.getFaultCodeList()) {
-                                    stringBuilder_describe.append(faultCode.getDescribe()).append(";  ");
-                                }
-                                currentOrder.setDescribe(stringBuilder_describe.toString());
+                                currentOrder.setNickname(order.getNickname());
+                                currentOrder.setPhone(order.getPhone());
+                                currentOrder.setCar_brand(order.getCar_brand());
+                                currentOrder.setCar_type(order.getCar_type());
+                                currentOrder.setFault_code(order.getFault_code());
+                                currentOrder.setDescribe(order.getDescribe());
 
                                 currentOrder.save();
 
                                 Current_orderActivity.launchActivity(OrderActivity.this, order);
+
+                                endDialog();
                                 OrderActivity.this.finish();
-                                ActivityCollector.getActivity(Take_orderActivity.class).finish();
+
+                                // 只有当take_orderActivity存在时才将其finish，不然直接finish会闪退
+                                Take_orderActivity take_orderActivity = ActivityCollector.getActivity(Take_orderActivity.class);
+                                if (null != take_orderActivity) {
+                                    ActivityCollector.getActivity(Take_orderActivity.class).finish();
+                                }
                             } else {
                                 prompt = "接单失败";
                             }
@@ -173,7 +177,7 @@ public class OrderActivity extends BaseActivity {
         });
 
     }
-    public static void launchActivity(Context context, OrderJson order) {
+    public static void launchActivity(Context context, CurrentOrder order) {
         Intent intent = new Intent(context, OrderActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP );
         Bundle bundle = new Bundle();
@@ -190,29 +194,19 @@ public class OrderActivity extends BaseActivity {
         }
         toolbar.setSubtitle("订单信息");
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        order_id.setText(order.getOrderNo());
-        order_date.setText(formatter.format(order.getCreateTime()));
-        user_name.setText(order.getCustomer().getCustName());
-        user_tele.setText(order.getCustomer().getCustPhone());
-        car_brand.setText(order.getCustomer().getCarBrand());
-        car_type.setText(order.getCustomer().getCarId());
-        StringBuilder stringBuilder_code = new StringBuilder("");
-        for (FaultCode faultCode : order.getFaultCodeList()) {
-            stringBuilder_code.append(faultCode.getCode()).append(";  ");
-        }
-        fault_code.setText(stringBuilder_code.toString());
-        StringBuilder stringBuilder_describe = new StringBuilder("");
-        for (FaultCode faultCode : order.getFaultCodeList()) {
-            stringBuilder_describe.append(faultCode.getDescribe()).append(";  ");
-        }
-        fault_describe.setText(stringBuilder_describe.toString());
 
+        order_id.setText(order.getOrder_id());
+        order_date.setText(formatter.format(order.getPublish_time()));
+        user_name.setText(order.getNickname());
+        user_tele.setText(order.getPhone());
+        car_brand.setText(order.getCar_brand());
+        car_type.setText(order.getCar_type());
+        fault_code.setText(order.getFault_code());
+        fault_describe.setText(order.getDescribe());
 
         // 从数据库中读取用户信息
-        List<User> user = DataSupport.findAll(User.class);
-        Repairman repairman = new Repairman(user.get(0));
-        order.setRepairman(repairman);
-//        order.setCreateTime(null);
+        List<User> userList = DataSupport.findAll(User.class);
+        user = userList.get(0);
     }
 
     @Override
@@ -232,6 +226,12 @@ public class OrderActivity extends BaseActivity {
             message.setText(msg);
             dialog.show();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        endDialog();
     }
 
     private void endDialog() {

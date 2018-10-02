@@ -13,7 +13,7 @@ public class UrlConsts {
 
     // 服务器路径
     private static final String SERVER_URL = "http://120.79.183.78/CarServiceServer";
- //   private static final String SERVER_URL = "http://192.168.1.104:8080";
+//    private static final String SERVER_URL = "http://192.168.43.38:8080";
 
     // 请求参数键
     public static final String KEY_TOKEN = "token";

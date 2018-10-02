@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.example.a93403.maintainerservice.R;
 import com.example.a93403.maintainerservice.activity.OrderActivity;
 import com.example.a93403.maintainerservice.activity.Take_orderActivity;
+import com.example.a93403.maintainerservice.bean.CurrentOrder;
 import com.example.a93403.maintainerservice.bean.FaultCode;
 import com.example.a93403.maintainerservice.bean.json.OrderJson;
 import com.example.a93403.maintainerservice.util.LocationUtil;
@@ -23,7 +24,7 @@ import java.util.Date;
 import java.util.List;
 
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> {
-    private List<OrderJson> mOrderList;
+    private List<CurrentOrder> mOrderList;
     private static final String TAG = "OrderAdapter";
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -43,7 +44,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
         }
     }
 
-    public OrderAdapter(List<OrderJson> mOrderList) {
+    public OrderAdapter(List<CurrentOrder> mOrderList) {
         this.mOrderList = mOrderList;
     }
 
@@ -56,7 +57,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
             @Override
             public void onClick(View view) {
                 int position = holder.getAdapterPosition();
-                OrderJson order = mOrderList.get(position);
+                CurrentOrder order = mOrderList.get(position);
                 OrderActivity.launchActivity(view.getContext(), order);
             }
         });
@@ -65,11 +66,11 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        OrderJson order = mOrderList.get(position);
+        CurrentOrder order = mOrderList.get(position);
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        holder.order_time.setText(formatter.format(order.getCreateTime()));
-        holder.order_type.setText(order.getCustomer().getCarBrand() + order.getCustomer().getCarId());
+        holder.order_time.setText(formatter.format(order.getPublish_time()));
+        holder.order_type.setText(String.format("%s%s", order.getCar_brand(), order.getCar_type()));
 
         double longitude1 = Take_orderActivity.longitude;
         double latitude1 = Take_orderActivity.latitude;
@@ -83,13 +84,8 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
 
         Log.i(TAG, "onBindViewHolder1: " + longitude1 + " : " + latitude1 );
         Log.i(TAG, "onBindViewHolder2: " + longitude2 + " : " + latitude2 );
-        StringBuilder stringBuilder = new StringBuilder("");
-        for (FaultCode faultCode : order.getFaultCodeList()) {
-            stringBuilder.append(faultCode.getDescribe()).append(";  ");
-        }
-        Log.i(TAG, "onBindViewHolder: " + stringBuilder.toString());
 
-        holder.order_describe.setText(stringBuilder.toString());
+        holder.order_describe.setText(order.getDescribe());
 
     }
 

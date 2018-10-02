@@ -23,6 +23,7 @@ import com.example.a93403.maintainerservice.R;
 import com.example.a93403.maintainerservice.adapter.OrderAdapter;
 import com.example.a93403.maintainerservice.annotation.InjectView;
 import com.example.a93403.maintainerservice.base.BaseActivity;
+import com.example.a93403.maintainerservice.bean.CurrentOrder;
 import com.example.a93403.maintainerservice.bean.Order;
 import com.example.a93403.maintainerservice.bean.User;
 import com.example.a93403.maintainerservice.bean.json.OrderJson;
@@ -47,7 +48,7 @@ public class Take_orderActivity extends BaseActivity {
     public static Double longitude = 106.528041;
     public static Double latitude = 29.455653;
 
-    public List<OrderJson> orderList = null;
+    public List<CurrentOrder> orderList = null;
     private OrderAdapter adapter;
     Location location = null;
 
@@ -68,7 +69,7 @@ public class Take_orderActivity extends BaseActivity {
 
         // 接收订单数据
         Intent intent = getIntent();
-        orderList = (List<OrderJson>) intent.getSerializableExtra(TRANSMIT_PARAM);
+        orderList = (List<CurrentOrder>) intent.getSerializableExtra(TRANSMIT_PARAM);
 
         if (!orderList.isEmpty()) {
             Log.i(TAG, "进入接收订单后订单JSON数据的传输情况=======》\n" + new Gson().toJson(orderList));
@@ -136,7 +137,7 @@ public class Take_orderActivity extends BaseActivity {
         recycle_view.setAdapter(adapter);
     }
 
-    public static void launchActivity(Context context, List<OrderJson> orderList) {
+    public static void launchActivity(Context context, List<CurrentOrder> orderList) {
         Intent intent = new Intent(context, Take_orderActivity.class);
         intent.putExtra(TRANSMIT_PARAM, (Serializable)orderList);
         context.startActivity(intent);

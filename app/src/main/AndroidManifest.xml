@@ -76,7 +76,8 @@
 
         <activity android:name=".activity.Order_historyActivity" />
         <activity android:name=".activity.Current_orderActivity" />
-        <activity android:name=".activity.InformActivity"></activity>
+        <activity android:name=".activity.InformActivity" />
+        <activity android:name=".activity.EmptyActivity"></activity>
     </application>
 
 </manifest>

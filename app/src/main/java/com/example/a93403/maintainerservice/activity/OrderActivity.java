@@ -15,7 +15,9 @@ import android.widget.Toast;
 
 import com.example.a93403.maintainerservice.R;
 import com.example.a93403.maintainerservice.annotation.InjectView;
+import com.example.a93403.maintainerservice.base.ActivityCollector;
 import com.example.a93403.maintainerservice.base.BaseActivity;
+import com.example.a93403.maintainerservice.bean.CurrentOrder;
 import com.example.a93403.maintainerservice.bean.FaultCode;
 import com.example.a93403.maintainerservice.bean.Order;
 import com.example.a93403.maintainerservice.bean.Repairman;
@@ -29,10 +31,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import org.litepal.LitePal;
 import org.litepal.crud.DataSupport;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -45,7 +49,7 @@ import okhttp3.Response;
 public class OrderActivity extends BaseActivity {
     public static final String TRANSMIT_PARAM = "ORDER";
     private static final String TAG = "OrderActivity";
-    private OrderJson order;
+    private OrderJson order = null;
     private String json;
     private Dialog dialog = null;
     @InjectView(R.id.order_tb)
@@ -104,7 +108,41 @@ public class OrderActivity extends BaseActivity {
                             Map<String, String> result = new Gson().fromJson(res, new TypeToken<Map<String, String>>() {}.getType());
                             if (UrlConsts.CODE_SUCCESS.equals(result.get(UrlConsts.KEY_RETURN_CODE))) {
                                 prompt = "接单成功";
+
+                                Date take_order_time = new Date();
+
+                                LitePal.getDatabase();
+                                CurrentOrder currentOrder = new CurrentOrder();
+                                //初始化数据库
+                                DataSupport.deleteAll(CurrentOrder.class);
+
+                                // 将订单数据存入数据库
+                                currentOrder.setOrder_id(order.getOrderNo());
+                                currentOrder.setPublish_time(order.getCreateTime());
+                                currentOrder.setAck_time(take_order_time);
+                                currentOrder.setNickname(order.getCustomer().getCustName());
+                                currentOrder.setPhone(order.getCustomer().getCustPhone());
+                                currentOrder.setCar_brand(order.getCustomer().getCarBrand());
+                                currentOrder.setCar_type(order.getCustomer().getCarId());
+
+                                StringBuilder stringBuilder_code = new StringBuilder("");
+                                for(FaultCode faultCode : order.getFaultCodeList()) {
+                                    stringBuilder_code.append(faultCode.getCode()).append(";  ");
+                                }
+
+                                currentOrder.setFault_code(stringBuilder_code.toString());
+
+                                StringBuilder stringBuilder_describe = new StringBuilder("");
+                                for (FaultCode faultCode : order.getFaultCodeList()) {
+                                    stringBuilder_describe.append(faultCode.getDescribe()).append(";  ");
+                                }
+                                currentOrder.setDescribe(stringBuilder_describe.toString());
+
+                                currentOrder.save();
+
                                 Current_orderActivity.launchActivity(OrderActivity.this, order);
+                                OrderActivity.this.finish();
+                                ActivityCollector.getActivity(Take_orderActivity.class).finish();
                             } else {
                                 prompt = "接单失败";
                             }

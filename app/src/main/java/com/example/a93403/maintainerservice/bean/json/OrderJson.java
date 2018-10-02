@@ -1,5 +1,6 @@
 package com.example.a93403.maintainerservice.bean.json;
 
+import com.example.a93403.maintainerservice.bean.CurrentOrder;
 import com.example.a93403.maintainerservice.bean.Customer;
 import com.example.a93403.maintainerservice.bean.FaultCode;
 import com.example.a93403.maintainerservice.bean.Repairman;
@@ -27,8 +28,42 @@ public class OrderJson implements Serializable {
     private Double latitude;
     private Date createTime;
 
+    public OrderJson(CurrentOrder co) {
+
+        this.orderNo = co.getOrder_id();
+        this.customer.setCustName(co.getNickname());
+        this.customer.setCreateTime(co.getPublish_time());
+        this.endTime = co.getEnd_time();
+        this.customer.setCustPhone(co.getPhone());
+        this.customer.setCarBrand(co.getCar_brand());
+        this.customer.setCarId(co.getCar_type());
+        this.setDescribe(co.getDescribe());
+        this.setFault_code(co.getFault_code());
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
+    public String getFault_code() {
+        return fault_code;
+    }
+
+    public void setFault_code(String fault_code) {
+        this.fault_code = fault_code;
+    }
+
+    private Date endTime;
+    private String fault_code;
+
     public OrderJson() {
     }
+
+
 
     public OrderJson(String orderNo, List<FaultCode> faultCodeList, String describe, Customer customer, Repairman repairman, Double longitude, Double latitude, Date createTime) {
         this.orderNo = orderNo;

@@ -81,7 +81,8 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
 
         holder.order_distance.setText(df.format(distance));
 
-        Log.i(TAG, "onBindViewHolder: " + longitude1 + " : " + latitude1 );
+        Log.i(TAG, "onBindViewHolder1: " + longitude1 + " : " + latitude1 );
+        Log.i(TAG, "onBindViewHolder2: " + longitude2 + " : " + latitude2 );
         StringBuilder stringBuilder = new StringBuilder("");
         for (FaultCode faultCode : order.getFaultCodeList()) {
             stringBuilder.append(faultCode.getDescribe()).append(";  ");

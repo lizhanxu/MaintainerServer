@@ -76,4 +76,14 @@ public class Actions {
      */
     public static final String ACTION_ACCEPT_ORDER = "order/accept.do";
 
+    /**
+     * 结束订单的action
+     */
+    public static final String ACTION_FINISH_ORDER = "order/finish.do";
+
+    /**
+     * 查询订单的action
+     */
+    public static final String ACTION_QUERY_ORDER = "order/query.do";
+
 }

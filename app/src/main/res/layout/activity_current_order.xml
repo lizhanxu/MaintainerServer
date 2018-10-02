@@ -179,14 +179,27 @@
 
     <Button
         android:layout_alignParentBottom="true"
-        android:id="@+id/ack_button"
-        android:layout_width="match_parent"
+        android:id="@+id/begin_btn"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
+        android:layout_margin="20dp"
         android:background="@drawable/btn_bg"
         android:onClick="onClick"
         android:text="开启导航"
         android:textColor="@android:color/white"
         android:textSize="25sp" />
 
+    <Button
+        android:id="@+id/end_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="20dp"
+        android:background="@drawable/btn_bg"
+        android:onClick="onClick"
+        android:text="结束订单"
+        android:textColor="@android:color/white"
+        android:textSize="25sp" />
 </RelativeLayout>

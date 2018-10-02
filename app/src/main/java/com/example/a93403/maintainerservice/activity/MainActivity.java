@@ -11,7 +11,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -27,6 +26,7 @@ import com.example.a93403.maintainerservice.R;
 import com.example.a93403.maintainerservice.annotation.InjectView;
 import com.example.a93403.maintainerservice.base.ActivityCollector;
 import com.example.a93403.maintainerservice.base.BaseActivity;
+import com.example.a93403.maintainerservice.bean.CurrentOrder;
 import com.example.a93403.maintainerservice.bean.User;
 import com.example.a93403.maintainerservice.bean.json.OrderJson;
 import com.example.a93403.maintainerservice.util.FormatCheckUtil;
@@ -35,6 +35,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.shinelw.library.ColorArcProgressBar;
+
+import org.litepal.crud.DataSupport;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -129,7 +131,14 @@ public class MainActivity extends BaseActivity {
                         Take_orderActivity.launchActivity(MainActivity.this, jsonList);
                         break;
                     case R.id.current_order:
-                        Current_orderActivity.launchActivity(MainActivity.this, null);
+                        List<CurrentOrder> currentOrders = DataSupport.findAll(CurrentOrder.class);
+                        if(currentOrders.get(0).getOrder_id() == null)
+                        {
+                            Intent intent = new Intent(MainActivity.this, EmptyActivity.class);
+                            startActivity(intent);
+                        }else{
+                            Current_orderActivity.launchActivity(MainActivity.this, null);
+                        }
                         break;
                     case R.id.order_history:
                         Order_historyActivity.launchActivity(MainActivity.this,user);

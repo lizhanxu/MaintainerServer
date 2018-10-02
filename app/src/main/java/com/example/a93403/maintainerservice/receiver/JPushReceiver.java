@@ -11,6 +11,7 @@ import android.util.Log;
 import com.example.a93403.maintainerservice.activity.MainActivity;
 import com.example.a93403.maintainerservice.activity.OrderActivity;
 import com.example.a93403.maintainerservice.activity.Take_orderActivity;
+import com.example.a93403.maintainerservice.bean.CurrentOrder;
 import com.example.a93403.maintainerservice.bean.json.OrderJson;
 import com.example.a93403.maintainerservice.constant.APPConsts;
 import com.example.a93403.maintainerservice.util.FormatCheckUtil;
@@ -57,7 +58,7 @@ public class JPushReceiver extends BroadcastReceiver {
 
             } else if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(intent.getAction())) {
                 Log.d(TAG, "[MyReceiver] 用户点击打开了通知");
-                processCustomMessage(context, bundle);
+                processOpenMessage(context, bundle);
 
             } else if (JPushInterface.ACTION_RICHPUSH_CALLBACK.equals(intent.getAction())) {
                 Log.d(TAG, "[MyReceiver] 用户收到到RICH PUSH CALLBACK: " + bundle.getString(JPushInterface.EXTRA_EXTRA));
@@ -112,7 +113,7 @@ public class JPushReceiver extends BroadcastReceiver {
     }
 
     //send msg to NotifyActivity
-    private void processCustomMessage(Context context, Bundle bundle) {
+    private void processOpenMessage(Context context, Bundle bundle) {
 
         // 打开自定义的Activity
         String extras = bundle.getString(JPushInterface.EXTRA_EXTRA);
@@ -123,7 +124,8 @@ public class JPushReceiver extends BroadcastReceiver {
                     .create();
 
             OrderJson orderJson = gson.fromJson(extras, new TypeToken<OrderJson>() {}.getType());
-            OrderActivity.launchActivity(context, orderJson);
+            CurrentOrder currentOrder = new CurrentOrder(orderJson);
+            OrderActivity.launchActivity(context, currentOrder);
         }
     }
 

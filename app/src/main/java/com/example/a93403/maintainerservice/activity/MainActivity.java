@@ -69,6 +69,7 @@ public class MainActivity extends BaseActivity {
     private Button test_btn;
 
     private List<OrderJson> jsonList = new ArrayList<>();
+    private List<CurrentOrder> orderList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,7 +129,7 @@ public class MainActivity extends BaseActivity {
                         FeedbackActivity.launchActivity(MainActivity.this,user.getNickname());
                         break;
                     case R.id.order:
-                        Take_orderActivity.launchActivity(MainActivity.this, jsonList);
+                        Take_orderActivity.launchActivity(MainActivity.this, orderList);
                         break;
                     case R.id.current_order:
                         List<CurrentOrder> currentOrders = DataSupport.findAll(CurrentOrder.class);
@@ -227,14 +228,16 @@ public class MainActivity extends BaseActivity {
                                 .create();
 
                         OrderJson orderJson = gson.fromJson(extras, new TypeToken<OrderJson>(){}.getType());
-                        Log.i(TAG, "onReceive: 测试时间===》" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(orderJson.getCreateTime()));
+                        CurrentOrder currentOrder = new CurrentOrder(orderJson);
                         jsonList.add(orderJson);
+                        orderList.add(currentOrder);
+                        Log.i(TAG, "onReceive: 订单列表数据===>" + new Gson().toJson(orderList));
 
                         // 判断Take_orderActivity是否已经存在，如果存在则更新其显示内容
                         Take_orderActivity take_orderActivity = ActivityCollector.getActivity(Take_orderActivity.class);
                         if (null != take_orderActivity) {
                             Log.i(TAG, "onReceive: 接单活动已经存在！！");
-                            take_orderActivity.orderList.add(orderJson);
+                            take_orderActivity.orderList.add(currentOrder);
 
                             take_orderActivity.refreshOrders();
                         } else {

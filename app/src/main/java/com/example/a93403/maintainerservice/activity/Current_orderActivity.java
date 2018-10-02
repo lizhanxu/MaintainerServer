@@ -49,7 +49,7 @@ public class Current_orderActivity extends BaseActivity {
 
     public static final String TRANSMIT_PARAM = "ORDER";
     private static final String TAG = "Current_orderActivity";
-    private OrderJson order;
+    private CurrentOrder order;
     private Dialog dialog = null;
 
     @InjectView(R.id.order_id)
@@ -83,7 +83,7 @@ public class Current_orderActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_current_order);
         InjectUtil.InjectView(this); // 自定义控件绑定注解
-        order = (OrderJson) getIntent().getSerializableExtra(TRANSMIT_PARAM);
+        order = (CurrentOrder) getIntent().getSerializableExtra(TRANSMIT_PARAM);
         init();
         begin_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,7 +116,7 @@ public class Current_orderActivity extends BaseActivity {
                 startDialog("请稍等...");
                 final long startTime = System.currentTimeMillis();
                 RequestBody requestBody = new FormBody.Builder()
-                        .add("orderNo",order.getOrderNo())
+                        .add("orderNo",order.getOrder_id())
                         .add("customerPhone","13900000000") // order.getCustomer().getCustPhone()  //13900000000
                         .build();
                 HttpUtil.okHttpPost(UrlConsts.getRequestURL(Actions.ACTION_FINISH_ORDER), requestBody, new Callback() {
@@ -141,6 +141,7 @@ public class Current_orderActivity extends BaseActivity {
                                 LitePal.getDatabase();
                                 DataSupport.deleteAll(CurrentOrder.class);
 
+                                endDialog();
                                 Current_orderActivity.this.finish();
                             } else {
                                 prompt = "结束接单失败";
@@ -177,7 +178,7 @@ public class Current_orderActivity extends BaseActivity {
         });
     }
 
-    public static void launchActivity(Context context, OrderJson order) {
+    public static void launchActivity(Context context, CurrentOrder order) {
         Intent intent = new Intent(context, Current_orderActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP );
         Bundle bundle = new Bundle();
@@ -199,22 +200,14 @@ public class Current_orderActivity extends BaseActivity {
 
         Log.i(TAG, "init: 输出来数据库数据===>" + new Gson().toJson(currentOrders));
         if(order != null){
-            order_id.setText(order.getOrderNo());
-            order_date.setText(formatter.format(order.getCreateTime()));
-            user_name.setText(order.getCustomer().getCustName());
-            user_tele.setText(order.getCustomer().getCustPhone());
-            car_brand.setText(order.getCustomer().getCarBrand());
-            car_type.setText(order.getCustomer().getCarId());
-            StringBuilder stringBuilder_code = new StringBuilder("");
-            for (FaultCode faultCode : order.getFaultCodeList()) {
-                stringBuilder_code.append(faultCode.getCode()).append(";  ");
-            }
-            fault_code.setText(stringBuilder_code.toString());
-            StringBuilder stringBuilder_describe = new StringBuilder("");
-            for (FaultCode faultCode : order.getFaultCodeList()) {
-                stringBuilder_describe.append(faultCode.getDescribe()).append(";  ");
-            }
-            fault_describe.setText(stringBuilder_describe.toString());
+            order_id.setText(order.getOrder_id());
+            order_date.setText(formatter.format(order.getPublish_time()));
+            user_name.setText(order.getNickname());
+            user_tele.setText(order.getPhone());
+            car_brand.setText(order.getCar_brand());
+            car_type.setText(order.getCar_type());
+            fault_code.setText(order.getFault_code());
+            fault_describe.setText(order.getDescribe());
             //读取数据库，取出接单时间
             Log.i(TAG, "init: " + new Gson().toJson(currentOrders));
             order_date_take.setText(formatter.format(currentOrders.get(0).getAck_time()));

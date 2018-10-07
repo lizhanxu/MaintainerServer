@@ -34,6 +34,7 @@ import org.litepal.crud.DataSupport;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -94,6 +95,7 @@ public class OrderActivity extends BaseActivity {
                 startDialog("请稍等...");
                 final long startTime = System.currentTimeMillis();
 
+                Log.i(TAG, "onClick: userid-->" + user.getId());
                 RequestBody requestBody = new FormBody.Builder()
                         .add("orderNo", order.getOrder_id()) // order.getCustomer().getCustPhone()  //13900000000
                         .add("customerPhone", order.getPhone())
@@ -140,16 +142,34 @@ public class OrderActivity extends BaseActivity {
 
                                 currentOrder.save();
 
+                                MainActivity mainActivity = ActivityCollector.getActivity(MainActivity.class);
+
+                                //删除接单页面中的已接订单
+                                Iterator<CurrentOrder> iter = mainActivity.orderList.iterator();
+                                while (iter.hasNext()) {
+                                    CurrentOrder item = iter.next();
+                                    if (item.getOrder_id().equals(order.getOrder_id())) {
+                                        iter.remove();
+                                    }
+                                }
+
+                                Log.i(TAG, "onResponse: before-->" + new Gson().toJson(mainActivity.orderList));
+                                Log.i(TAG, "onResponse: before-->" + new Gson().toJson(order));
+                                mainActivity.orderList.remove(order);
+                                Log.i(TAG, "onResponse: after-->" + new Gson().toJson(mainActivity.orderList));
+
                                 Current_orderActivity.launchActivity(OrderActivity.this, order);
 
                                 endDialog();
-                                OrderActivity.this.finish();
 
                                 // 只有当take_orderActivity存在时才将其finish，不然直接finish会闪退
                                 Take_orderActivity take_orderActivity = ActivityCollector.getActivity(Take_orderActivity.class);
-                                if (null != take_orderActivity) {
+                                if (take_orderActivity != null){
                                     ActivityCollector.getActivity(Take_orderActivity.class).finish();
                                 }
+                                OrderActivity.this.finish();
+
+
                             } else {
                                 prompt = "接单失败";
                             }

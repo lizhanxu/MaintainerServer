@@ -46,6 +46,8 @@ import okhttp3.FormBody;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static com.example.a93403.maintainerservice.constant.APPConsts.REPAIRMAN_TO_CUSTOMER_REQUEST;
+
 public class Current_orderActivity extends BaseActivity {
 
     public static final String TRANSMIT_PARAM = "ORDER";
@@ -118,7 +120,7 @@ public class Current_orderActivity extends BaseActivity {
                 final long startTime = System.currentTimeMillis();
                 RequestBody requestBody = new FormBody.Builder()
                         .add("orderNo",order.getOrder_id())
-                        .add("customerPhone",order.getPhone()) // order.getPhone() //13900000000
+                        .add("operate",REPAIRMAN_TO_CUSTOMER_REQUEST)
                         .build();
                 HttpUtil.okHttpPost(UrlConsts.getRequestURL(Actions.ACTION_FINISH_ORDER), requestBody, new Callback() {
                     @Override

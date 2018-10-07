@@ -75,4 +75,12 @@ public class APPConsts {
     public static final int CIRCLE_PROGRESS_SIZE = 200;
 
     public static final int TURN_ON_BT_REQUEST_CODE = 1;
+
+    /**
+     * 订单结束相关操作标志位
+     */
+    public static final String REPAIRMAN_TO_CUSTOMER_REQUEST = "RPRM_TO_CUST_REQ";
+    public static final String CUSTOMER_TO_REPAIRMAN_REQUEST = "CUST_TO_RPRM_REQ";
+    public static final String REPAIRMAN_TO_CUSTOMER_RESPONSE = "RPRM_TO_CUST_RES";
+    public static final String CUSTOMER_TO_REPAIRMAN_RESPONSE = "CUST_TO_RPRM_RES";
 }

@@ -44,6 +44,7 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
+
 public class MainActivity extends BaseActivity {
 
     public static final String TRANSMIT_PARAM = "USER";
@@ -68,8 +69,8 @@ public class MainActivity extends BaseActivity {
     private Button test_btn;
 
     private CurrentOrder order;
-    private List<OrderJson> jsonList = new ArrayList<>();
-    private List<CurrentOrder> orderList = new ArrayList<>();
+    public List<OrderJson> jsonList = new ArrayList<>();
+    public List<CurrentOrder> orderList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

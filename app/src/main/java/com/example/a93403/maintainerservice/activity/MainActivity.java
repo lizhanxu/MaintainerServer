@@ -1,5 +1,6 @@
 package com.example.a93403.maintainerservice.activity;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -40,6 +41,7 @@ import org.litepal.crud.DataSupport;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -80,6 +82,9 @@ public class MainActivity extends BaseActivity {
         registerMessageReceiver();  // 注册接收推送消息的广播
 
         user = (User) getIntent().getSerializableExtra(TRANSMIT_PARAM);
+
+        @SuppressLint("SimpleDateFormat") String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+        Log.i(TAG, "onResponse: " + time);
 
         test_btn.setOnClickListener(new View.OnClickListener() {
             @Override

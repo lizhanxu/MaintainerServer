@@ -59,6 +59,8 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
                 int position = holder.getAdapterPosition();
                 CurrentOrder order = mOrderList.get(position);
                 OrderActivity.launchActivity(view.getContext(), order);
+
+
             }
         });
         return holder;

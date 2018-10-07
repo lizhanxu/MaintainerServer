@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,11 +19,7 @@ import com.example.a93403.maintainerservice.annotation.InjectView;
 import com.example.a93403.maintainerservice.base.ActivityCollector;
 import com.example.a93403.maintainerservice.base.BaseActivity;
 import com.example.a93403.maintainerservice.bean.CurrentOrder;
-import com.example.a93403.maintainerservice.bean.FaultCode;
-import com.example.a93403.maintainerservice.bean.Order;
-import com.example.a93403.maintainerservice.bean.Repairman;
 import com.example.a93403.maintainerservice.bean.User;
-import com.example.a93403.maintainerservice.bean.json.OrderJson;
 import com.example.a93403.maintainerservice.constant.Actions;
 import com.example.a93403.maintainerservice.constant.UrlConsts;
 import com.example.a93403.maintainerservice.util.HttpUtil;
@@ -43,9 +40,10 @@ import java.util.Map;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
-import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+
+import static com.example.a93403.maintainerservice.base.MyApplication.judgement;
 
 public class OrderActivity extends BaseActivity {
     public static final String TRANSMIT_PARAM = "ORDER";
@@ -73,7 +71,7 @@ public class OrderActivity extends BaseActivity {
     @InjectView(R.id.fault_describe)
     private TextView fault_describe;
     @InjectView(R.id.ack_button)
-    private TextView ack_button;
+    private Button ack_button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +80,9 @@ public class OrderActivity extends BaseActivity {
 
         order = (CurrentOrder) getIntent().getSerializableExtra(TRANSMIT_PARAM);
         InjectUtil.InjectView(this); // 自定义控件绑定注解
+        if (judgement == 1){
+            ack_button.setVisibility(View.INVISIBLE);
+        }
         init();
 
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
@@ -119,6 +120,7 @@ public class OrderActivity extends BaseActivity {
 
                                 Date take_order_time = new Date();
 
+
                                 LitePal.getDatabase();
                                 CurrentOrder currentOrder = new CurrentOrder();
                                 //初始化数据库
@@ -127,6 +129,7 @@ public class OrderActivity extends BaseActivity {
                                 // 将订单数据存入数据库
                                 currentOrder.setOrder_id(order.getOrder_id());
                                 currentOrder.setPublish_time(order.getPublish_time());
+                                Log.i(TAG, "onResponse: 接单时间"+take_order_time.toString());
                                 currentOrder.setAck_time(take_order_time);
                                 currentOrder.setNickname(order.getNickname());
                                 currentOrder.setPhone(order.getPhone());

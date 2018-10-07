@@ -50,6 +50,36 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/show_id"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:layout_margin="5dp"
+        android:background="@drawable/profile_bg">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:gravity="center_vertical"
+            android:text="I D"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/show_id_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="40dp"
+            android:layout_marginRight="40dp"
+            android:gravity="center_vertical"
+            android:text="@string/default_null_str"
+            android:textSize="18sp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/set_nickname_rl"
         android:layout_width="match_parent"
         android:layout_height="65dp"
@@ -91,37 +121,38 @@
         android:layout_width="match_parent"
         android:layout_height="65dp"
         android:layout_margin="5dp"
-        android:onClick="onClick"
-        android:background="@drawable/profile_bg">
+        android:background="@drawable/profile_bg"
+        android:onClick="onClick">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="@string/profile_email_str_tv"
-            android:textSize="18sp"
-            android:gravity="center_vertical"
             android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp" />
+            android:layout_marginStart="10dp"
+            android:gravity="center_vertical"
+            android:text="@string/profile_email_str_tv"
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/show_email_tv"
             android:layout_width="wrap_content"
-            android:text="@string/default_null_str"
-            android:textSize="18sp"
-            android:gravity="center_vertical"
             android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="40dp"
             android:layout_marginRight="40dp"
-            android:layout_marginEnd="40dp" />
+            android:gravity="center_vertical"
+            android:text="@string/default_null_str"
+            android:textSize="18sp" />
 
         <ImageView
             android:layout_width="25dp"
             android:layout_height="match_parent"
-            android:src="@drawable/icon_profile_arrow"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"/>
+            android:src="@drawable/icon_profile_arrow" />
     </RelativeLayout>
+
 
 
     <LinearLayout

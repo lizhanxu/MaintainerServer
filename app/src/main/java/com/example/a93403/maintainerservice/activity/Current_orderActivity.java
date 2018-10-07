@@ -38,6 +38,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -117,7 +118,7 @@ public class Current_orderActivity extends BaseActivity {
                 final long startTime = System.currentTimeMillis();
                 RequestBody requestBody = new FormBody.Builder()
                         .add("orderNo",order.getOrder_id())
-                        .add("customerPhone","13900000000") // order.getCustomer().getCustPhone()  //13900000000
+                        .add("customerPhone",order.getPhone()) // order.getPhone() //13900000000
                         .build();
                 HttpUtil.okHttpPost(UrlConsts.getRequestURL(Actions.ACTION_FINISH_ORDER), requestBody, new Callback() {
                     @Override
@@ -196,6 +197,7 @@ public class Current_orderActivity extends BaseActivity {
         }
         toolbar.setSubtitle("当前订单");
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        formatter.setTimeZone(TimeZone.getTimeZone("GMT+8"));
         List<CurrentOrder> currentOrders = DataSupport.findAll(CurrentOrder.class);
 
         Log.i(TAG, "init: 输出来数据库数据===>" + new Gson().toJson(currentOrders));

@@ -10,7 +10,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,17 +23,14 @@ import com.example.a93403.maintainerservice.adapter.OrderAdapter;
 import com.example.a93403.maintainerservice.annotation.InjectView;
 import com.example.a93403.maintainerservice.base.BaseActivity;
 import com.example.a93403.maintainerservice.bean.CurrentOrder;
-import com.example.a93403.maintainerservice.bean.Order;
-import com.example.a93403.maintainerservice.bean.User;
-import com.example.a93403.maintainerservice.bean.json.OrderJson;
 import com.example.a93403.maintainerservice.util.InjectUtil;
 import com.example.a93403.maintainerservice.util.LocationUtil;
 import com.google.gson.Gson;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+
+import static com.example.a93403.maintainerservice.base.MyApplication.judgement;
 
 public class Take_orderActivity extends BaseActivity {
 
@@ -135,6 +131,7 @@ public class Take_orderActivity extends BaseActivity {
         recycle_view.setLayoutManager(layoutManager);
         adapter = new OrderAdapter(orderList);
         recycle_view.setAdapter(adapter);
+        judgement = 0;
     }
 
     public static void launchActivity(Context context, List<CurrentOrder> orderList) {

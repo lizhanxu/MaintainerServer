@@ -50,6 +50,7 @@ public class FeedbackActivity extends BaseActivity {
                 String text = feedback_submit_btn.getText().toString().trim();
                 Log.i(TAG, "onClick: get feedback-->" + text);
                 Toast.makeText(FeedbackActivity.this, "提交成功", Toast.LENGTH_SHORT).show();
+                FeedbackActivity.this.finish();
             }
         });
     }

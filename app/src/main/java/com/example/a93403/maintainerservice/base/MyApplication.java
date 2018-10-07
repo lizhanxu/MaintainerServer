@@ -19,6 +19,7 @@ import cn.jpush.android.api.JPushInterface;
 public class MyApplication extends Application {
 
     private static Context context;
+    public static int judgement= 0;
 
     @Override
     public void onCreate() {

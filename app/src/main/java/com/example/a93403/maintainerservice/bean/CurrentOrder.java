@@ -168,4 +168,22 @@ public class CurrentOrder extends DataSupport implements Serializable {
     public void setLatitude(Double latitude) {
         this.latitude = latitude;
     }
+
+    @Override
+    public String toString() {
+        return "CurrentOrder{" +
+                "order_id='" + order_id + '\'' +
+                ", publish_time=" + publish_time +
+                ", ack_time=" + ack_time +
+                ", end_time=" + end_time +
+                ", nickname='" + nickname + '\'' +
+                ", phone='" + phone + '\'' +
+                ", car_brand='" + car_brand + '\'' +
+                ", car_type='" + car_type + '\'' +
+                ", fault_code='" + fault_code + '\'' +
+                ", describe='" + describe + '\'' +
+                ", longitude=" + longitude +
+                ", latitude=" + latitude +
+                '}';
+    }
 }

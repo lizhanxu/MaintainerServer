@@ -50,8 +50,6 @@ public class ProfileActivity extends BaseActivity implements View.OnClickListene
 
     public static final String MODIFY_NICKNAME = "nickname";
     public static final String MODIFY_EMAIL = "email";
-    public static final String MODIFY_BRAND = "brand";
-    public static final String MODIFY_BRAND_NO = "brand_no";
 
     private User user;
 
@@ -77,6 +75,8 @@ public class ProfileActivity extends BaseActivity implements View.OnClickListene
     @InjectView(R.id.show_email_tv)
     private TextView show_email_tv;
 
+    @InjectView(R.id.show_id_tv)
+    private TextView show_id_tv;
 
     @InjectView(R.id.exit_login_btn)
     private Button exit_login_btn;
@@ -87,9 +87,7 @@ public class ProfileActivity extends BaseActivity implements View.OnClickListene
         setContentView(R.layout.activity_profile);
         user = (User) getIntent().getSerializableExtra(PARAM_USER);
         InjectUtil.InjectView(this); // 自定义控件绑定注解
-
         init();
-
     }
 
     @Override
@@ -228,8 +226,7 @@ public class ProfileActivity extends BaseActivity implements View.OnClickListene
 
         show_nickname_tv.setText(user.getNickname() == null ? "无" : user.getNickname());
         show_email_tv.setText(user.getEmail());
-//        show_brand_tv.setText(user.getBrand() == null ? "无" : user.getBrand());
-//        show_brand_no_tv.setText(user.getBrand_no() == null ? "无" : user.getBrand_no());
+        show_id_tv.setText(String.valueOf(user.getId()));
         Glide.with(ProfileActivity.this)
                 .load(user.getPortrait())
                 .error(R.drawable.load_fail)

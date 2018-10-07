@@ -39,6 +39,8 @@ import okhttp3.FormBody;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static com.example.a93403.maintainerservice.base.MyApplication.judgement;
+
 public class Order_historyActivity extends BaseActivity {
 
     public static final String TRANSMIT_PARAM = "USER";
@@ -142,6 +144,7 @@ public class Order_historyActivity extends BaseActivity {
         recycle_view.setLayoutManager(layoutManager);
         adapter = new OrderAdapter(orderList);
         recycle_view.setAdapter(adapter);
+        judgement = 1;
     }
 
     public void refreshOrders() {

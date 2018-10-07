@@ -39,12 +39,12 @@ import com.shinelw.library.ColorArcProgressBar;
 
 import org.litepal.crud.DataSupport;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+
 
 
 public class MainActivity extends BaseActivity {
@@ -70,8 +70,9 @@ public class MainActivity extends BaseActivity {
     @InjectView(R.id.test_btn)
     private Button test_btn;
 
-    private List<OrderJson> jsonList = new ArrayList<>();
-    private List<CurrentOrder> orderList = new ArrayList<>();
+    private CurrentOrder order;
+    public List<OrderJson> jsonList = new ArrayList<>();
+    public List<CurrentOrder> orderList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,16 +139,25 @@ public class MainActivity extends BaseActivity {
                         break;
                     case R.id.current_order:
                         List<CurrentOrder> currentOrders = DataSupport.findAll(CurrentOrder.class);
-                        if(currentOrders == null)
+                        Log.i(TAG, "init: 输出来数据库数据===>" + new Gson().toJson(currentOrders));
+                        if(currentOrders == null || currentOrders.isEmpty())
                         {
                             Intent intent = new Intent(MainActivity.this, EmptyActivity.class);
                             startActivity(intent);
                         }else{
-                            Current_orderActivity.launchActivity(MainActivity.this, null);
+                            order=currentOrders.get(0);
+
+                            Current_orderActivity.launchActivity(MainActivity.this, order);
                         }
                         break;
                     case R.id.order_history:
                         Order_historyActivity.launchActivity(MainActivity.this,user);
+                        break;
+                    case R.id.comment:
+                        CommentActivity.launchActivity(MainActivity.this,user.getId());
+                        break;
+                    case R.id.settings:
+                        SettingsActivity.launchActivity(MainActivity.this,user);
                         break;
                     default:break;
                 }

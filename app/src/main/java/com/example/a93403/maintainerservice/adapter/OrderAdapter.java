@@ -23,6 +23,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import static com.example.a93403.maintainerservice.base.MyApplication.judgement;
+
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> {
     private List<CurrentOrder> mOrderList;
     private static final String TAG = "OrderAdapter";
@@ -33,6 +35,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
         TextView order_type;
         TextView order_distance;
         TextView order_describe;
+        TextView text_1;
 
         public ViewHolder(View View) {
             super(View);
@@ -41,6 +44,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
             order_type = View.findViewById(R.id.order_type);
             order_distance = View.findViewById(R.id.order_distance);
             order_describe = View.findViewById(R.id.order_describe);
+            text_1 = View.findViewById(R.id.text_1);
         }
     }
 
@@ -59,6 +63,8 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
                 int position = holder.getAdapterPosition();
                 CurrentOrder order = mOrderList.get(position);
                 OrderActivity.launchActivity(view.getContext(), order);
+
+
             }
         });
         return holder;
@@ -80,6 +86,10 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
 
         DecimalFormat df = new DecimalFormat("0.00");
 
+        if(judgement == 1){
+            holder.order_distance.setVisibility(View.INVISIBLE);
+            holder.text_1.setVisibility(View.INVISIBLE);
+        }
         holder.order_distance.setText(df.format(distance));
 
         Log.i(TAG, "onBindViewHolder1: " + longitude1 + " : " + latitude1 );

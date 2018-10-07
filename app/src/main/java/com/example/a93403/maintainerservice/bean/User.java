@@ -19,7 +19,7 @@ import java.io.Serializable;
 public class User extends DataSupport implements Serializable {
 
     @SerializedName("id")
-    private int id;
+    private int custId;
 
     @SerializedName("phone")
     private String phone;
@@ -36,8 +36,8 @@ public class User extends DataSupport implements Serializable {
     public User() {
     }
 
-    public User(int id, String phone, String email, String nickname, String portrait1) {
-        this.id = id;
+    public User(int custId, String phone, String email, String nickname, String portrait1) {
+        this.custId = custId;
         this.phone = phone;
         this.email = email;
         this.nickname = nickname;
@@ -45,11 +45,11 @@ public class User extends DataSupport implements Serializable {
     }
 
     public int getId() {
-        return id;
+        return custId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setId(int custId) {
+        this.custId = custId;
     }
 
     public String getPhone() {
@@ -87,7 +87,7 @@ public class User extends DataSupport implements Serializable {
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
+                "id=" + custId +
                 ", phone='" + phone + '\'' +
                 ", email='" + email + '\'' +
                 ", nickname='" + nickname + '\'' +

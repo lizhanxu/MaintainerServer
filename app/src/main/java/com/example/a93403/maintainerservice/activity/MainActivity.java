@@ -12,6 +12,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -57,6 +58,9 @@ public class MainActivity extends BaseActivity {
     private NavigationView navView;
     @InjectView(R.id.nav_view)
     private NavigationView navigationView;
+    @InjectView(R.id.take_order_cd)
+    private CardView take_order_cd;
+
 
     private TextView username;
     private CircleImageView head_portrait;
@@ -118,6 +122,12 @@ public class MainActivity extends BaseActivity {
                 bundle.putSerializable("user_info", user);
                 intent.putExtras(bundle);
                 startActivityForResult(intent, 0);
+            }
+        });
+        take_order_cd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Take_orderActivity.launchActivity(MainActivity.this, orderList);
             }
         });
         navView.setCheckedItem(R.id.first);

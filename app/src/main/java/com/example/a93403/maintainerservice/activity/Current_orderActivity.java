@@ -10,6 +10,7 @@ import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import com.example.a93403.maintainerservice.R;
 import com.example.a93403.maintainerservice.annotation.InjectView;
+import com.example.a93403.maintainerservice.base.ActivityCollector;
 import com.example.a93403.maintainerservice.base.BaseActivity;
 import com.example.a93403.maintainerservice.bean.CurrentOrder;
 import com.example.a93403.maintainerservice.bean.FaultCode;
@@ -48,6 +50,9 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static com.example.a93403.maintainerservice.base.MyApplication.isShowFinishRequestDialog;
+import static com.example.a93403.maintainerservice.base.MyApplication.monthnumber;
+import static com.example.a93403.maintainerservice.base.MyApplication.todaynumber;
+import static com.example.a93403.maintainerservice.base.MyApplication.totalnumber;
 import static com.example.a93403.maintainerservice.constant.APPConsts.CUSTOMER_TO_REPAIRMAN_RESPONSE;
 import static com.example.a93403.maintainerservice.constant.APPConsts.REPAIRMAN_TO_CUSTOMER_REQUEST;
 import static com.example.a93403.maintainerservice.constant.APPConsts.REPAIRMAN_TO_CUSTOMER_RESPONSE;
@@ -182,6 +187,20 @@ public class Current_orderActivity extends BaseActivity {
                         });
                     }
                 });
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //获取控件
+//                        TextView totalCount = (TextView) LayoutInflater.from(Current_orderActivity.this).inflate(R.layout.activity_main, null).findViewById(R.id.total_count);
+//                        TextView monthCount = (TextView) LayoutInflater.from(Current_orderActivity.this).inflate(R.layout.activity_main, null).findViewById(R.id.month_count);
+//                        TextView todayCount = (TextView) LayoutInflater.from(Current_orderActivity.this).inflate(R.layout.activity_main, null).findViewById(R.id.today_count);
+
+                        totalnumber++;
+                        monthnumber++;
+                        todaynumber++;
+                    }
+                });
             }
         });
     }
@@ -260,6 +279,7 @@ public class Current_orderActivity extends BaseActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(Current_orderActivity.this);
         builder.setIcon(R.mipmap.app_log);
         builder.setTitle(order.getOrder_id());
+        builder.setCancelable(false);
         builder.setMessage(order.getNickname() + "请求结束订单，是否同意？");
         builder.setPositiveButton("同意", new DialogInterface.OnClickListener() {
             @Override

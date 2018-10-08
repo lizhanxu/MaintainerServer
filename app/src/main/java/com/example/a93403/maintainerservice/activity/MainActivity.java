@@ -58,6 +58,9 @@ import okhttp3.FormBody;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static com.example.a93403.maintainerservice.base.MyApplication.monthnumber;
+import static com.example.a93403.maintainerservice.base.MyApplication.todaynumber;
+import static com.example.a93403.maintainerservice.base.MyApplication.totalnumber;
 import static com.example.a93403.maintainerservice.constant.APPConsts.ORDER_FINISH_RESPONSE;
 import static com.example.a93403.maintainerservice.constant.APPConsts.ORDER_KEY_MESSAGE;
 import static com.example.a93403.maintainerservice.constant.APPConsts.ORDER_NOTIFICATION_ACCEPT_TITLE;
@@ -159,6 +162,45 @@ public class MainActivity extends BaseActivity {
         });
     }
 
+    private void RequestStatistics() {
+        Log.i(TAG, "RequestStatistics: "+String.valueOf(user.getId()));
+        RequestBody requestBody = new FormBody.Builder()
+                .add("repairman_id", String.valueOf(user.getId()))
+                .build();
+        HttpUtil.okHttpPost(UrlConsts.getRequestURL(Actions.ACTION_QUERY_ORDER_Statistics), requestBody, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.i(TAG, "请求统计结果失败");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String res = response.body().string();
+                ResultObject<Map<String,Integer>> result = new Gson().fromJson(res, new TypeToken<ResultObject<Map<String,Integer>>>() {}.getType());
+                if (UrlConsts.CODE_SUCCESS.equals(result.getCode())){
+                    Map<String,Integer> Statistics= result.getData();
+                    Integer todayCount = Statistics.get("todayCount");
+                    Integer totalCount = Statistics.get("totalCount");
+                    Integer monthCount = Statistics.get("monthCount");
+                    total_count.setText(String.valueOf(totalCount));
+                    totalnumber = totalCount;
+                    month_count.setText(String.valueOf(monthCount));
+                    monthnumber = monthCount;
+                    today_count.setText(String.valueOf(todayCount));
+                    todaynumber = todayCount;
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        total_count.setText(String.valueOf(totalnumber));
+        month_count.setText(String.valueOf(monthnumber));
+        today_count.setText(String.valueOf(todaynumber));
+    }
+
     private void set_navigation() {
         View view = navigationView.inflateHeaderView(R.layout.nav_header);
         head_portrait = view.findViewById(R.id.head_portrait);
@@ -229,33 +271,7 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    private void RequestStatistics() {
-        Log.i(TAG, "RequestStatistics: "+String.valueOf(user.getId()));
-        RequestBody requestBody = new FormBody.Builder()
-                .add("repairman_id", String.valueOf(user.getId()))
-                .build();
-        HttpUtil.okHttpPost(UrlConsts.getRequestURL(Actions.ACTION_QUERY_ORDER_Statistics), requestBody, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.i(TAG, "请求统计结果失败");
-            }
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String res = response.body().string();
-                ResultObject<Map<String,Integer>> result = new Gson().fromJson(res, new TypeToken<ResultObject<Map<String,Integer>>>() {}.getType());
-                if (UrlConsts.CODE_SUCCESS.equals(result.getCode())){
-                    Map<String,Integer> Statistics= result.getData();
-                    Integer todayCount = Statistics.get("todayCount");
-                    Integer totalCount = Statistics.get("totalCount");
-                    Integer monthCount = Statistics.get("monthCount");
-                    total_count.setText(String.valueOf(totalCount));
-                    month_count.setText(String.valueOf(monthCount));
-                    today_count.setText(String.valueOf(todayCount));
-                }
-            }
-        });
-    }
 
     public static void launchActivity(Context context, User user) {
         Intent intent = new Intent(context, MainActivity.class);

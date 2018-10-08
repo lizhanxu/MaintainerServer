@@ -20,6 +20,9 @@ public class MyApplication extends Application {
 
     private static Context context;
     public static int judgement= 0;
+    public static int totalnumber=0;
+    public static int monthnumber = 0;
+    public static  int todaynumber = 0;
 
     public static Boolean isShowFinishRequestDialog = false;
 

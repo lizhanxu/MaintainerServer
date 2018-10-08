@@ -267,6 +267,11 @@ public class Current_orderActivity extends BaseActivity {
 //                detail_status_value_tv.setText("已完成");
                 params.put("answer", "1");
                 HttpUtil.sendHttpRequest(UrlConsts.getRequestURL(Actions.ACTION_FINISH_ORDER), params, null);
+
+                LitePal.getDatabase();
+                DataSupport.deleteAll(CurrentOrder.class);
+                Toast.makeText(Current_orderActivity.this, "订单结束成功！", Toast.LENGTH_SHORT).show();
+                Current_orderActivity.this.finish();
             }
         });
 

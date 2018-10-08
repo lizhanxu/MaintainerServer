@@ -91,18 +91,19 @@ public class JPushReceiver extends BroadcastReceiver {
             Map<String, Object> request = new Gson().fromJson(extras, new TypeToken<Map<String, Object>>() {}.getType());
             if (request != null) {
 
-                List<CurrentOrder> currentOrders = DataSupport.findAll(CurrentOrder.class);
-                Log.i(TAG, "processOpenNotify: 输出来数据库数据===>" + new Gson().toJson(currentOrders));
-
                 Current_orderActivity current_orderActivity = ActivityCollector.getActivity(Current_orderActivity.class);
                 if (null != current_orderActivity) {
                     current_orderActivity.showFinishRequestDialog();
                 } else {
                     isShowFinishRequestDialog = true;
-                    //打开自定义的Activity
+
+                    List<CurrentOrder> currentOrders = DataSupport.findAll(CurrentOrder.class);
+                    Log.i(TAG, "processOpenNotify: 输出来数据库数据===>" + new Gson().toJson(currentOrders));
+
+                    // 打开自定义的Activity
                     Intent intent = new Intent(context, Current_orderActivity.class);
                     intent.putExtra("ORDER", currentOrders.get(0));
-                    //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    // i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     context.startActivity(intent);
                 }

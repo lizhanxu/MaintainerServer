@@ -36,6 +36,7 @@ import org.litepal.crud.DataSupport;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
@@ -46,7 +47,10 @@ import okhttp3.FormBody;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static com.example.a93403.maintainerservice.base.MyApplication.isShowFinishRequestDialog;
+import static com.example.a93403.maintainerservice.constant.APPConsts.CUSTOMER_TO_REPAIRMAN_RESPONSE;
 import static com.example.a93403.maintainerservice.constant.APPConsts.REPAIRMAN_TO_CUSTOMER_REQUEST;
+import static com.example.a93403.maintainerservice.constant.APPConsts.REPAIRMAN_TO_CUSTOMER_RESPONSE;
 
 public class Current_orderActivity extends BaseActivity {
 
@@ -78,7 +82,6 @@ public class Current_orderActivity extends BaseActivity {
     @InjectView(R.id.end_btn)
     private Button end_btn;
 
-
     @InjectView(R.id.current_order_tb)
     private Toolbar toolbar;
     @Override
@@ -88,6 +91,11 @@ public class Current_orderActivity extends BaseActivity {
         InjectUtil.InjectView(this); // 自定义控件绑定注解
         order = (CurrentOrder) getIntent().getSerializableExtra(TRANSMIT_PARAM);
         init();
+
+        event();
+    }
+
+    private void event() {
         begin_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -138,24 +146,23 @@ public class Current_orderActivity extends BaseActivity {
 
                             Map<String, String> result = new Gson().fromJson(res, new TypeToken<Map<String, String>>() {}.getType());
                             if (UrlConsts.CODE_SUCCESS.equals(result.get(UrlConsts.KEY_RETURN_CODE))) {
-                                prompt = "结束订单成功";
-                                Log.i(TAG, "结束订单成功");
-                                //初始化数据库
-                                LitePal.getDatabase();
-                                DataSupport.deleteAll(CurrentOrder.class);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        endDialog();
+                                        startDialog("订单结束请求已发送，请等待对方接受请求...");
+                                    }
+                                });
 
-                                endDialog();
-                                Current_orderActivity.this.finish();
+                                Log.i(TAG, "订单结束请求已发送，请等待对方接受请求...");
+
+                                return;
                             } else {
                                 prompt = "结束接单失败";
-                                Log.i(TAG, "结束订单成功************1");
                             }
-                            Log.i(TAG, "结束订单成功*************2");
                         } else {
                             prompt = "未知错误";
-                            Log.i(TAG, "结束订单成功**************3");
                         }
-                        Log.i(TAG, "结束订单成功******************4");
                         long endTime = System.currentTimeMillis();
                         if (endTime - startTime < 1000) {
                             try {
@@ -163,22 +170,35 @@ public class Current_orderActivity extends BaseActivity {
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
-                            endDialog();
                         }
 
                         final String finalPrompt = prompt;
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Log.i(TAG, "消息提示成功");
+                                endDialog();
                                 Toast.makeText(Current_orderActivity.this, finalPrompt, Toast.LENGTH_SHORT).show();
                             }
                         });
-                        endDialog();
                     }
                 });
             }
         });
+    }
+
+    public void processOrderFinishResponse(String result) {
+        Log.i(TAG, "processOrderFinishResponse: 订单请求被响应后被调用");
+        endDialog();
+
+        if ("SUCCESS".equals(result)) {
+            //初始化数据库
+            LitePal.getDatabase();
+            DataSupport.deleteAll(CurrentOrder.class);
+            Toast.makeText(Current_orderActivity.this, "订单结束成功！", Toast.LENGTH_SHORT).show();
+            Current_orderActivity.this.finish();
+        } else {
+            Toast.makeText(Current_orderActivity.this, "订单结束请求被拒绝！", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public static void launchActivity(Context context, CurrentOrder order) {
@@ -226,6 +246,38 @@ public class Current_orderActivity extends BaseActivity {
             fault_code.setText(currentOrders.get(0).getFault_code());
             fault_describe.setText(currentOrders.get(0).getDescribe());
         }
+
+        if (isShowFinishRequestDialog) {
+            isShowFinishRequestDialog = false;
+            showFinishRequestDialog();
+        }
+    }
+
+    public void showFinishRequestDialog() {
+        final Map<String, String> params = new HashMap<>();
+        params.put("orderNo", order.getOrder_id());
+        params.put("operate", REPAIRMAN_TO_CUSTOMER_RESPONSE);
+        AlertDialog.Builder builder = new AlertDialog.Builder(Current_orderActivity.this);
+        builder.setIcon(R.mipmap.app_log);
+        builder.setTitle(order.getOrder_id());
+        builder.setMessage(order.getNickname() + "请求结束订单，是否同意？");
+        builder.setPositiveButton("同意", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+//                detail_status_value_tv.setText("已完成");
+                params.put("answer", "1");
+                HttpUtil.sendHttpRequest(UrlConsts.getRequestURL(Actions.ACTION_FINISH_ORDER), params, null);
+            }
+        });
+
+        builder.setNegativeButton("拒绝", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                params.put("answer", "0");
+                HttpUtil.sendHttpRequest(UrlConsts.getRequestURL(Actions.ACTION_FINISH_ORDER), params, null);
+            }
+        });
+        builder.show();
     }
 
     @Override
@@ -252,6 +304,8 @@ public class Current_orderActivity extends BaseActivity {
             dialog.dismiss();
         }
     }
+
+
 
 //    private void sendResquestWithOkHttp(){
 //        new Thread(new Runnable() {

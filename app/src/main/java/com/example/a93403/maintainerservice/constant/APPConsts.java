@@ -29,13 +29,6 @@ public class APPConsts {
     public static final String SHARED_KEY_LATITUDE = "latitude";
 
     /**
-     * 极光推送设置
-     */
-    public static final String SHARED_KEY_REGISTRATION_ID = "Registration_ID";
-    public static final String CUSTOMER_TAG = "CUSTOMER";
-    public static final String REPAIRMAN_TAG = "REPAIRMAN";
-
-    /**
      * 本地SQLite数据库名称
      */
     public static final String DATABASE_NAME = "OnLineCarService.db";
@@ -77,10 +70,30 @@ public class APPConsts {
     public static final int TURN_ON_BT_REQUEST_CODE = 1;
 
     /**
+     * 极光推送设置
+     */
+    public static final String SHARED_KEY_REGISTRATION_ID = "Registration_ID";
+    public static final String CUSTOMER_TAG = "CUSTOMER";
+    public static final String REPAIRMAN_TAG = "REPAIRMAN";
+
+    public static final String PUSH_TYPE_MESSAGE = "MESSAGE";
+    public static final String PUSH_TYPE_NOTIFY = "NOTIFICATION";
+
+    /**
      * 订单结束相关操作标志位
      */
     public static final String REPAIRMAN_TO_CUSTOMER_REQUEST = "RPRM_TO_CUST_REQ";
     public static final String CUSTOMER_TO_REPAIRMAN_REQUEST = "CUST_TO_RPRM_REQ";
     public static final String REPAIRMAN_TO_CUSTOMER_RESPONSE = "RPRM_TO_CUST_RES";
     public static final String CUSTOMER_TO_REPAIRMAN_RESPONSE = "CUST_TO_RPRM_RES";
+
+    public static final String ORDER_FINISH_RESPONSE = "FINISH_RESPONSE";
+
+    public static final String ORDER_KEY_CODE = "code";
+    public static final String ORDER_KEY_MESSAGE = "msg";
+    public static final String ORDER_KEY_ORDERNO = "orderNo";
+    public static final String ORDER_KEY_NAME = "name";
+
+    public static final String ORDER_NOTIFICATION_ACCEPT_TITLE = "订单接收请求";
+    public static final String ORDER_NOTIFICATION_FINISH_TITLE = "订单结束请求";
 }

@@ -153,10 +153,10 @@ public class OrderActivity extends BaseActivity {
                                     }
                                 }
 
-                                Log.i(TAG, "onResponse: before-->" + new Gson().toJson(mainActivity.orderList));
-                                Log.i(TAG, "onResponse: before-->" + new Gson().toJson(order));
-                                mainActivity.orderList.remove(order);
-                                Log.i(TAG, "onResponse: after-->" + new Gson().toJson(mainActivity.orderList));
+//                                Log.i(TAG, "onResponse: before-->" + new Gson().toJson(mainActivity.orderList));
+//                                Log.i(TAG, "onResponse: before-->" + new Gson().toJson(order));
+//                                mainActivity.orderList.remove(order);
+//                                Log.i(TAG, "onResponse: after-->" + new Gson().toJson(mainActivity.orderList));
 
                                 Current_orderActivity.launchActivity(OrderActivity.this, order);
 

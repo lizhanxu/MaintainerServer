@@ -86,4 +86,9 @@ public class Actions {
      */
     public static final String ACTION_QUERY_ORDER = "order/queryFinish.do";
 
+    /**
+     * 查询订单统计的action
+     */
+    public static final String ACTION_QUERY_ORDER_Statistics = "order/statistics.do";
+
 }

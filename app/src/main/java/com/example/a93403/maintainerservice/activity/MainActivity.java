@@ -29,9 +29,13 @@ import com.example.a93403.maintainerservice.annotation.InjectView;
 import com.example.a93403.maintainerservice.base.ActivityCollector;
 import com.example.a93403.maintainerservice.base.BaseActivity;
 import com.example.a93403.maintainerservice.bean.CurrentOrder;
+import com.example.a93403.maintainerservice.bean.ResultObject;
 import com.example.a93403.maintainerservice.bean.User;
 import com.example.a93403.maintainerservice.bean.json.OrderJson;
+import com.example.a93403.maintainerservice.constant.Actions;
+import com.example.a93403.maintainerservice.constant.UrlConsts;
 import com.example.a93403.maintainerservice.util.FormatCheckUtil;
+import com.example.a93403.maintainerservice.util.HttpUtil;
 import com.example.a93403.maintainerservice.util.InjectUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -40,6 +44,7 @@ import com.shinelw.library.ColorArcProgressBar;
 
 import org.litepal.crud.DataSupport;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,6 +52,11 @@ import java.util.List;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 import static com.example.a93403.maintainerservice.constant.APPConsts.ORDER_FINISH_RESPONSE;
 import static com.example.a93403.maintainerservice.constant.APPConsts.ORDER_KEY_MESSAGE;
@@ -69,20 +79,23 @@ public class MainActivity extends BaseActivity {
     private NavigationView navigationView;
     @InjectView(R.id.take_order_cd)
     private CardView take_order_cd;
+    @InjectView(R.id.total_count)
+    private TextView total_count;
+    @InjectView(R.id.month_count)
+    private TextView month_count;
+    @InjectView(R.id.today_count)
+    private TextView today_count;
+    @InjectView(R.id.site_name)
+    private TextView site_name;
+    @InjectView(R.id.site_address)
+    private TextView site_address;
+
 
 
     private TextView username;
     private CircleImageView head_portrait;
     private User user;
 
-    @InjectView(R.id.bar1)
-    private ColorArcProgressBar colorArcProgressBar;
-
-    @InjectView(R.id.test_btn)
-    private Button test_btn;
-
-    @InjectView(R.id.accept_order_tv)
-    private TextView accept_order_tv;
 
     private CurrentOrder order;
     public List<OrderJson> jsonList = new ArrayList<>();
@@ -101,33 +114,52 @@ public class MainActivity extends BaseActivity {
         @SuppressLint("SimpleDateFormat") String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
         Log.i(TAG, "onResponse: " + time);
 
-        test_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                colorArcProgressBar.setCurrentValues(0);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        colorArcProgressBar.setCurrentValues(100);
-                    }
-                }, 1000);
-            }
-        });
+        init();
 
-        accept_order_tv.setOnClickListener(new View.OnClickListener() {
+        take_order_cd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Take_orderActivity.launchActivity(MainActivity.this, orderList);
             }
         });
 
-        setSupportActionBar(toolbar);
-        ActionBar actionBar=getSupportActionBar();
-        if(actionBar!=null){
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setHomeAsUpIndicator(R.drawable.navigation);
-        }
 
+    }
+
+    private void init() {
+        RequestStatistics();
+        RequestSiteinfo();
+        init_toolbar();
+        set_navigation();
+    }
+
+    private void RequestSiteinfo() {
+        Log.i(TAG, "RequestSiteinfo: "+String.valueOf(user.getId()));
+        RequestBody requestBody = new FormBody.Builder()
+                .add("owner_id", String.valueOf(user.getId()))
+                .build();
+        HttpUtil.okHttpPost(UrlConsts.getRequestURL(Actions.ACTION_QUERY_SITE), requestBody, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.i(TAG, "请求店铺信息失败");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String res = response.body().string();
+                ResultObject<Map<String,String>> result = new Gson().fromJson(res, new TypeToken<ResultObject<Map<String,String>>>() {}.getType());
+                if (UrlConsts.CODE_SUCCESS.equals(result.getCode())){
+                    Map<String,String> Site= result.getData();
+                    String sitename = Site.get("name");
+                    String siteaddress = Site.get("address");
+                    site_name.setText(sitename);
+                    site_address.setText(siteaddress);
+                }
+            }
+        });
+    }
+
+    private void set_navigation() {
         View view = navigationView.inflateHeaderView(R.layout.nav_header);
         head_portrait = view.findViewById(R.id.head_portrait);
         username = view.findViewById(R.id.username);
@@ -144,12 +176,6 @@ public class MainActivity extends BaseActivity {
                 bundle.putSerializable("user_info", user);
                 intent.putExtras(bundle);
                 startActivityForResult(intent, 0);
-            }
-        });
-        take_order_cd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Take_orderActivity.launchActivity(MainActivity.this, orderList);
             }
         });
         navView.setCheckedItem(R.id.first);
@@ -193,6 +219,44 @@ public class MainActivity extends BaseActivity {
             }
         });
     }
+
+    private void init_toolbar() {
+        setSupportActionBar(toolbar);
+        ActionBar actionBar=getSupportActionBar();
+        if(actionBar!=null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.drawable.navigation);
+        }
+    }
+
+    private void RequestStatistics() {
+        Log.i(TAG, "RequestStatistics: "+String.valueOf(user.getId()));
+        RequestBody requestBody = new FormBody.Builder()
+                .add("repairman_id", String.valueOf(user.getId()))
+                .build();
+        HttpUtil.okHttpPost(UrlConsts.getRequestURL(Actions.ACTION_QUERY_ORDER_Statistics), requestBody, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.i(TAG, "请求统计结果失败");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String res = response.body().string();
+                ResultObject<Map<String,Integer>> result = new Gson().fromJson(res, new TypeToken<ResultObject<Map<String,Integer>>>() {}.getType());
+                if (UrlConsts.CODE_SUCCESS.equals(result.getCode())){
+                    Map<String,Integer> Statistics= result.getData();
+                    Integer todayCount = Statistics.get("todayCount");
+                    Integer totalCount = Statistics.get("totalCount");
+                    Integer monthCount = Statistics.get("monthCount");
+                    total_count.setText(String.valueOf(totalCount));
+                    month_count.setText(String.valueOf(monthCount));
+                    today_count.setText(String.valueOf(todayCount));
+                }
+            }
+        });
+    }
+
     public static void launchActivity(Context context, User user) {
         Intent intent = new Intent(context, MainActivity.class);
         Bundle bundle = new Bundle();
